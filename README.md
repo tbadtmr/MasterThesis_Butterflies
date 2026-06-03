@@ -10,6 +10,9 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 - `05-burnin/` final burnin script and simulation output
 - `06-simulation/` simulation scripts and output (historical and future simulation)
 - `07-analysis/` comparison of model outputs to empirical data and downstream analysis
+- `logs`
+- `plots`
+- `summaries`
 
 ## Conda environment
 
