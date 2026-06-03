@@ -61,7 +61,7 @@ Most chromosomes showed highly consistent assembly characteristics, with low N c
 
 ### Generating the genomic coordination file
 
-The genomic coordination file used by the SLiM model was generated from the chromosome 9 annotation. The script extracts gene and exon features from `genes.gff3` for chromosome 9 and converts them into a continuous segmentation of the chromosome into exon, intron and non_coding regions. Coordinates in the final file are 1-based inclusive.
+The genomic coordination file used by the SLiM model was generated from the chromosome 9 annotation. The script extracts gene and exon features from `genes.gff3` and converts them into a continuous segmentation of chromosome 9 consisting of exon, intron, and non_coding regions. Coordinates in the final file are stored as 1-based inclusive intervals. Consecutive regions are non-overlapping and together span the entire chromosome.
 
 ```sh
 ./00-scripts/02_make_coord_file.sh
