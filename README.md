@@ -74,13 +74,33 @@ Two additional windows from the middle of the chromosome were generated for test
 
 ### Landscape data
 
-HIDLA
-CORINE
+#### HILDA+ Land Use Data
+This project uses the HILDA+ Global Land Use Change dataset (extended version; 1899–2019) as the spatial basis for both the simulation and landscape analyses (Winkler et al., 2021; Winkler et al., 2020).
+
+Download `hildap_vGLOB-1.0_geotiff_eckert4.zip` from:
+https://doi.pangaea.de/10.1594/PANGAEA.921846?format=html#download
+Extract all `.tif` files to:
+`01-data/HILDA/`
+
+#### CORINE Land Cover 2018
+We also use the CORINE Land Cover 2018 raster dataset (100 m resolution) to identify habitat classes and calibrate habitat suitability maps used in the landscape analyses.
+
+Download the CORINE Land Cover 2018 raster dataset (100 m) from:
+https://land.copernicus.eu/en/products/corine-land-cover/clc2018
+Dataset DOI:
+https://doi.org/10.2909/960998c1-1870-4e82-8051-6485205ebbac
+Extract the downloaded raster files to:
+`01-data/CORINE/`
 
 ### Analysis of monitoring and occurrences sites
 
-monitroing scheme analysis
-gbif occurrences analysis
+MONITORING SCHEME
+presence/absence site analysis
+density analysis
+forest / buffer / edge analysis
+
+GBIF
+
 
 ### Generating landscape suitability maps
 
