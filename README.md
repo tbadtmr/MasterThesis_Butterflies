@@ -108,7 +108,9 @@ GBIF
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
+
 Winkler, K., Fuchs, R., Rounsevell, M.D.A., & Herold, M. (2021). Global land use changes are four times greater than previously estimated. Nature Communications, 12, 2501. https://doi.org/10.1038/s41467-021-22702-2
+
 Winkler, K., Fuchs, R., Rounsevell, M.D.A., & Herold, M. (2020). HILDA+ Global Land Use Change between 1960 and 2019 (vGLOB-1.0). PANGAEA. https://doi.org/10.1594/PANGAEA.921846
 
 
