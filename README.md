@@ -104,7 +104,37 @@ GBIF
 
 ### Generating landscape suitability maps
 
+HILDA+ land-cover classes are reclassified into habitat suitability values for _C. semiargus_ and written as annual maps for 1899–2019. Suitability ranges from 0 (unsuitable) to 1 (primary breeding habitat):
 
+HILDA+ class	Code	Suitability
+Pasture / rangeland	33	1.0
+Unmanaged grass / shrubland	55	1.0
+Cropland	22	0.5
+Forest	44	0.3
+Urban	11	0.1
+Ocean / no data, sparse / no vegetation, water	0, 66, 77	0.0
+
+HILDA+ has no semi-natural grassland class, so classes 33 and 55 are both treated as primary breeding habitat. Rasters are reprojected onto hilda_final_clip_20km_south.tif (340 × 277 cells, ~1110 × 1105 m, cell area 1.23 km²) and masked to Sweden; cells outside the mask become 0.
+
+```sh
+Rscript 00-scripts/R-make_suitability_maps.R
+````
+Outputs, per year, to `03-model_input/suit_maps/`:
+- `hilda_suitability_<year>.tif` — suitability raster
+- `hilda_suitability_<year>.txt` — flat row-major values, read directly by the SLiM model
+- `hilda_suitability_<year>_dims.txt` — grid geometry
+
+and to summaries/:
+- `class_areas_by_year.tsv` — cells and km² per land-cover class per year
+- `suitability_value_counts.tsv` — cells and km² per suitability value per year
+
+**Habitat change through time**
+Summarises the maps into the habitat-loss figure and the numbers quoted in the results.
+
+```sh
+Rscript 00-scripts/R-habitat_change_summary.R
+```
+Reads `summaries/class_areas_by_year.tsv`. Outputs to `plots/` as .png, .pdf and .svg: (A) weighted suitable habitat area and (B) grassland area split into pasture / rangeland and unmanaged grass / shrubland. Also prints the 1899 and 2019 values, the percentage changes, the year of minimum grassland area, and forest's share of the weighted total.
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
