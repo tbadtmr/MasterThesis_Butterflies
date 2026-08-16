@@ -18,15 +18,20 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 
 (*add yml file)
 ```sh
+conda env create -f environment.yml
 conda activate butterflies
 ```
+- SLiM and SLiMgui 5.1
 - samtools 1.13
 - seqkit v2.13.0
 - dustmasker 1.0.0
-- SLiM and SLiMgui 5.1
+- BCFtools / RoH 1.20
+- PLINK 1.9
+- pixy
+- R
 
 ## 1. Reference genome and chromosome selection
-he reference genome of *Cyaniris semiargus* was obtained from NCBI:
+The reference genome of *Cyaniris semiargus* was obtained from NCBI:
 
 - Assembly: **GCA_905187585.1 (ilCyaSemi1.1)**
 - Source: https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_905187585.1/
@@ -44,7 +49,7 @@ Unzip the dataset:
 ```sh
 unzip ncbi_dataset.zip
 ```
-To index the genome:
+The genome can then be indexed with:
 ```sh
 samtools faidx GCA_905187585.1_ilCyaSemi1.1_genomic.fna
 ```
@@ -61,14 +66,14 @@ Most chromosomes showed highly consistent assembly characteristics, with low N c
 
 ### Generating the genomic coordination file
 
-The genomic coordination file used by the SLiM model was generated from the chromosome 9 annotation. The script extracts gene and exon features from `genes.gff3` and converts them into a continuous segmentation of chromosome 9 consisting of exon, intron, and non_coding regions. Coordinates in the final file are stored as 1-based inclusive intervals. Consecutive regions are non-overlapping and together span the entire chromosome.
+The genomic coordination file used by the SLiM model was generated from the chromosome 9 annotation. The script extracts gene and exon features from `genes.gff3` and converts them into a continuous segmentation of chromosome 9 consisting of exon, intron and non_coding regions. Coordinates in the final file are stored as 1-based inclusive intervals. Consecutive regions are non-overlapping and together span the entire chromosome.
 
 ```sh
 ./00-scripts/02_make_coord_file.sh
 ```
 Output: `03-model_input/coord_chr9.txt`
 Additional chromosome-specific annotation output: `03-model_input/coord_chr9.gff3`
-Two additional windows from the middle of the chromosome were generated for testing and debugging the model before running simulations on the full chromsome in `03-model_input/testing/` (200 kB, 2 Mb window).
+Two additional windows from the middle of the chromosome were generated for testing and debugging the model before running simulations on the full chromosome in `03-model_input/testing/` (200 kB, 2 Mb window).
 
 ## 2. Landscape analysis
 
