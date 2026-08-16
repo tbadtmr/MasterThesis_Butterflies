@@ -1,0 +1,27 @@
+CORINE_code	CORINE_name	HILDA_group
+111	Continuous urban fabric	Urban
+112	Discontinuous urban fabric	Urban
+121	Industrial or commercial units	Urban
+122	Road and rail networks and associated land	Urban
+124	Airports	Urban
+131	Mineral extraction sites	Urban
+141	Green urban areas	Urban
+142	Sport and leisure facilities	Urban
+211	Non-irrigated arable land	Cropland
+231	Pastures	Pasture/Rangeland
+242	Complex cultivation patterns	Cropland
+243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland
+311	Broad-leaved forest	Forest
+312	Coniferous forest	Forest
+313	Mixed forest	Forest
+321	Natural grasslands	Unmanaged grass/shrubland
+322	Moors and heathland	Unmanaged grass/shrubland
+324	Transitional woodland-shrub	Unmanaged grass/shrubland
+331	Beaches, dunes, sands	Sparse/no vegetation
+332	Bare rocks	Sparse/no vegetation
+333	Sparsely vegetated areas	Sparse/no vegetation
+334	Burnt areas	Sparse/no vegetation
+411	Inland marshes	Other
+412	Peat bogs	Other
+512	Water bodies	Other
+523	Sea and ocean	Other

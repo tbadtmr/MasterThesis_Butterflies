@@ -1,0 +1,398 @@
+sit_uid	site	site_category	total_sum	lat	lon	county	datasource	clc_code	clc_name	habitat_hilda	presence
+3787	Lisselfäbod	T	12	6703904.15462051	612599.289921502	Gävleborgs län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3788	Bäck	T	6	6697781.78915382	612126.369989019	Gävleborgs län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3786	Ullanda	T	1	6695809.83097565	612010.535436566	Gävleborgs län	Svensk Dagfjärilsövervakning, LU	411	Inland marshes	Other	1
+445	Vreten	P	6	6690051.84654503	644516.99207053	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3568	Knippels	P	2	6685130.86980785	546877.683306293	Dalarnas län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+856	Fensbol, Ektäppan	T	16	6679067.31956827	390593.752212073	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+3244	Fensbol, Petteråsen	T	2	6678374.92717915	390289.362853416	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+899	Nedre Malsjö	P	3	6677844.06636292	512998.70102837	Dalarnas län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2667	Runt Gimodammen	T	16	6677551.75419402	675075.309692829	Uppsala län	Svensk Dagfjärilsövervakning, LU	411	Inland marshes	Other	1
+459	Gamla Finntorpet	T	3	6676079.20890703	503549.543827945	Dalarnas län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+169	Borsbäcken	P	13	6674506.52435176	576625.967495405	Dalarnas län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3718	Ritamäki	T	3	6670644.70796159	363454.021917732	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+900	Hammarbacken	P	15	6669318.95226078	510703.633108846	Dalarnas län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+2911	Styggtjärn	T	8	6668724.25025239	502767.661666387	Dalarnas län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+458	Bangårdsområdet	P	2	6668439.45377837	510228.536469462	Dalarnas län	Svensk Dagfjärilsövervakning, LU	121	Industrial or commercial units	Urban	1
+626	Högbergets gamla slalombacke	P	21	6666677.78145677	510942.799967442	Dalarnas län	Svensk Dagfjärilsövervakning, LU	141	Green urban areas	Urban	1
+2769	Karsbo	T	2	6666367.13007815	550526.835077545	Västmanlands län	Länsstyrelsen i Västmanlands län	242	Complex cultivation patterns	Cropland	1
+159	Lappugglan 9	P	1	6665881.98624012	511838.207642151	Dalarnas län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+3905	Hummelsvedjans fjärilsstig 1	T	10	6660599.39993645	691454.793904177	Stockholms län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+873	Ransbysätter, Kåråsen	T	2	6656065.24516762	400999.813080355	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	242	Complex cultivation patterns	Cropland	1
+875	Ransbysätter, Lillängen	T	6	6655453.30396749	400817.364384048	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	242	Complex cultivation patterns	Cropland	1
+3703	Kammesmakk	T	6	6655374.26295031	371962.223742889	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+3906	Storängen, Väddö	T	2	6654793.5085896	713613.674250658	Stockholms län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+862	Brandområdet N3	P	6	6650449.30889815	558926.528385035	Västmanlands län	Svensk Dagfjärilsövervakning, LU	334	Burnt areas	Sparse/no vegetation	1
+685	Smyre	T	4	6648910.37116334	399506.781432705	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+687	Jordberg	P	1	6648803.70799418	399120.262805855	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+686	Jordberg, östra infarten	P	6	6648763.80452173	399290.669653897	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+688	Jordberg, västra infarten	P	2	6648672.3885831	398842.993822813	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+636	Ivarsbjörke	T	20	6648619.47424909	398273.905658443	Värmlands län	Trafikverket	412	Peat bogs	Other	1
+689	Åsen, Sunne	P	4	6648510.9483979	397652.520495646	Värmlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+690	Höglunda, östra infarten	P	4	6648383.46004173	396869.443013551	Värmlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3894	Cronberget-Vallvägen, Berg	T	1	6648109.27808492	570929.631420633	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+691	Höglunda, västra infarten	P	1	6648008.46061885	396855.022170055	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+4094	Bergs skogar 1, Partystugan	P	3	6647927.57400292	571031.817478188	Västmanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+4095	Bergs skogar 2	P	1	6647684.71415818	571037.775570148	Västmanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+4096	Bergs skogar 3	P	3	6647408.71006642	571031.141016273	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+4097	Bergs skogar 4, Soldattorpet	P	1	6647301.47461661	571091.431082805	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3893	Granbacken, Berg	T	7	6646820.19053464	571221.260037573	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3891	Kalkugnsbacken, Berg	P	9	6646768.38730701	570907.978426524	Västmanlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+3890	Berg 2:12, Västerfärnebo	P	3	6646715.04044809	571206.545477295	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3698	Humsjön Nergården	T	2	6646591.70692898	375084.800338175	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+3892	Kloberget, Islingsby	P	4	6646503.04929563	571858.947662996	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2804	Lafallhöjden	T	17	6646096.63450701	365544.605252439	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+903	Stråslingan	T	14	6645239.21997171	589161.716257533	Västmanlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+3741	Tiskaretjärn	T	11	6644594.70160262	374839.268265479	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+3702	Kalvhöjden	T	2	6643690.92904047	376954.240655037	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+1094	Råby Karlberg	P	5	6643583.76202707	649421.340796848	Uppsala län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+151	Röcklinge 2:7	T	2	6642449.65280136	600959.732616286	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+270	Granvik	P	4	6642256.32879981	713228.550622429	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+234	Gruvbyhagen	P	7	6641596.95100847	588159.346239073	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2816	Station Lunda	P	13	6639411.36902533	653593.374232067	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+486	Virsbo, Skräddartorp	P	3	6638667.78384569	561311.377163208	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2707	Berthåga kyrkogård	T	88	6638460.45070111	644223.752555142	Uppsala län	Svensk Dagfjärilsövervakning, LU	142	Sport and leisure facilities	Urban	1
+269	Enebba	T	2	6638062.78055516	559654.22442223	Västmanlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+4280	Holmbro Norrgården 31	P	2	6637119.77160992	628048.410058764	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+522	Hågadalen	T	3	6636126.08434851	645387.946751673	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+803	Fjärilsstigen, Uppsala	T	3	6635445.10138906	643242.659694734	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2956	Kung Björns hög - Högbyhatt	T	4	6635224.02870524	644383.125704021	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+958	Hågadalen Södra Norby	T	56	6635131.02333135	645941.95235627	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+144	Nåsten - Fjärilsstigen	T	70	6634990.34981292	642516.339827994	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+145	Syd Rävsjön, Norrtälje	T	6	6634810.38230337	697717.238257543	Stockholms län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+3277	Barkspadevägen 7, Valsätra	P	1	6634042.94174687	647560.882983954	Uppsala län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+146	Bastbolvägen 15, Husby-Långhundra, Knvista	P	6	6632263.49260931	674363.758677116	Uppsala län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+3617	Vårdsätra skog	T	2	6631751.35375597	647311.82213123	Uppsala län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+148	Snäcktorp- Mellingeholm	T	13	6631073.92459143	717932.164734007	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+764	Focksta kvarn	T	31	6630750.08373372	633549.775568705	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+362	Lötaholmen	T	2	6629673.81301024	722182.725111085	Uppsala län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+363	Västra Röllingen	P	2	6629666.655747	723566.660503363	Uppsala län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+464	Lönnbromossen	P	1	6628713.37899231	566631.015617656	Västmanlands län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+153	Skogsmuren, Ramnäs	T	11	6628338.31685351	560863.229881566	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+158	Erlanderslingan	T	2	6627012.33976162	413289.178694102	Värmlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+192	Stora Karsbo	T	44	6626707.02413122	522983.837821333	Örebro län	Svensk Dagfjärilsövervakning, LU	242	Complex cultivation patterns	Cropland	1
+235	Grindtorpet	P	22	6626654.40650602	661868.137615909	Uppsala län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+357	Norrby	P	4	6626036.47835645	566823.524198873	Västmanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+2834	Fågeltäppa	P	1	6625889.14543521	558817.616729703	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+150	Upnäs tomtområde	T	18	6625258.68506357	723776.270331896	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+3765	Strömsmarkssätern	T	1	6625193.37668352	331049.364088004	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+929	Vånsjöåsen	T	7	6624633.66839006	617458.684822484	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+963	Hälle	T	8	6624619.56271603	349690.38363458	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+576	Källbo	P	2	6623298.45871945	644801.141189224	Uppsala län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+884	Länsmansbärby, fjärilsrabatten	P	2	6622900.33945241	630310.942236174	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+250	Sångkärrsbacken	P	4	6622236.33694497	562528.962532221	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2773	Skogsbro	T	1	6622103.0573162	596717.396699385	Västmanlands län	Länsstyrelsen i Västmanlands län	312	Coniferous forest	Forest	1
+249	Norrgården	P	1	6621891.81064824	562066.284723962	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2771	Lindmuren	T	1	6621738.71542161	569703.977157033	Västmanlands län	Länsstyrelsen i Västmanlands län	312	Coniferous forest	Forest	1
+463	Läkärret	P	5	6621129.11477906	561579.697947686	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3633	Tuna växthus, Östersta bro	T	1	6621020.08578621	632560.328784922	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+928	Finsta	T	3	6620800.4911607	629299.68849005	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+3631	Lilla Bärby depå	T	2	6620707.08170861	633623.911602895	Uppsala län	Länsstyrelsen i Västmanlands län	211	Non-irrigated arable land	Cropland	1
+927	Tuna backe	T	4	6620105.06784918	631473.681363625	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+763	Dumdals ängar	T	17	6619855.97716021	633765.228835743	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+221	Sulvik Lunden	P	34	6619101.17220623	354353.091358038	Värmlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+2688	Stora Källmora norra	P	1	6618672.08933654	558557.443918892	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2689	Stora Källmora södra	P	1	6618671.07763025	558556.456504515	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+765	Hjälstavikens NR	T	27	6618083.57139843	634359.649325882	Uppsala län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+2799	Edeby naturreservat	T	1	6617504.15386762	414893.103604438	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	313	Mixed forest	Forest	1
+1082	Biskops-Arnö	T	11	6616906.22641432	640564.690818762	Uppsala län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+853	Torsked	T	9	6616846.96615139	422667.611808834	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+915	Knutserud	T	2	6616771.81749814	407188.523794245	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+349	Furnäs	P	10	6616750.71366051	559138.626284461	Västmanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+917	Mickelstorp	T	12	6616411.77771887	405855.516121432	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	313	Mixed forest	Forest	1
+916	Råbäcksängen	T	2	6616271.18940187	406213.060075232	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+852	Lyckan, skogsäng	T	2	6616196.88831394	419346.993416709	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+2802	Bergs klätt	T	21	6615854.0149373	357490.9571893	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+854	Torsberget	T	1	6614852.33039146	418922.527227198	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+4263	Östmarken	T	15	6613604.17531495	391630.334941106	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2805	Genbäcken	T	12	6613433.20849464	419271.619016137	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+420	Västra Ringstad, slinga 2	T	12	6609950.68708184	394244.488475666	Värmlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+313	Västra Ringstad	T	17	6609804.34883338	394540.126033552	Värmlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+859	Fjällsviken NO	T	3	6608685.93868782	385244.181174317	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+2801	Prästgårdsön, Pannkakan	T	2	6608004.5379006	415888.099757385	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+569	L. Harsjön	T	340	6606333.95520393	688465.784322554	Stockholms län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+352	Bäcktorpet, Torphyttan	P	6	6605876.50862744	511252.956869162	Örebro län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2836	Oppgårda	T	3	6604697.87106451	579209.391622513	Västmanlands län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+351	Trädgård Urby	P	1	6603118.33166714	585062.0079972	Västmanlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+2768	Kocktorp 2, Ängsö	T	5	6601844.93068236	606178.165430919	Västmanlands län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+236	Dyuddens sydspets	P	2	6601532.08585609	594318.875781121	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+317	Kocktorp, Ängsö	T	12	6601451.28900424	606199.937364614	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2774	Askö Sandtorpet	T	3	6600008.9803003	583647.114692454	Västmanlands län	Länsstyrelsen i Västmanlands län	231	Pastures	Pasture/Rangeland	1
+254	Sandtorpet, Askö	P	3	6599695.22538764	583742.896397079	Södermanlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+2753	Sörbyfallet Grythyttan	P	6	6597422.8795286	479227.188488277	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3789	Uddevik	T	13	6596981.93319017	426964.988296604	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+918	Alstrumsängen	T	15	6596483.23336165	419884.181167982	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+1090	Timmerkajen	P	2	6595652.72568883	558384.995811562	Västmanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+701	Ubbyslingan	T	5	6594919.51891155	683015.127064086	Stockholms län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+428	Viggbyholm	P	10	6594385.06803884	676787.583462579	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+4262	Pommerndalen	T	2	6593090.26867472	665160.221214938	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+154	Hemdalsvägen	T	6	6593020.36970151	521760.387942324	Örebro län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+3883	Soldattorpet Wärnersborg	P	3	6592748.65238441	604738.856493374	Södermanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+3295	Torpa Egebo	P	1	6592549.25137959	510439.949841939	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3193	Fotbollsplanen, Brunnsåker	P	4	6592020.70952703	610667.276239169	Södermanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+679	Ekelund-Bogesund	T	2	6591572.0645249	681615.93858571	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+919	Almarskogen	T	4	6591455.91670711	415055.345658723	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+390	Broknäs slinga 1, Bogesund	T	44	6590486.02132816	685227.556755474	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+427	Björnbråtarna	T	2	6590188.8762743	369245.658134512	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+924	Alkvetterns skjutbana	T	4	6590105.57120792	466517.876055877	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	313	Mixed forest	Forest	1
+911	N om Kyrksten	T	41	6589403.05782994	465132.94287345	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+2803	Gårdsviksmossen	T	1	6589139.48226155	378238.892267068	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+931	O om Kyrksten	T	1	6588954.31820083	466047.020773771	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+976	Igelbäcken naturreservat	T	17	6587500.98693882	668522.410269374	Stockholms län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+932	Bygget	T	2	6586683.55482632	461537.34680671	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+2819	Åsa gravfält	T	1	6585535.80467154	624248.808444164	Södermanlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+974	Begravningsplats Sundbyberg	P	4	6585477.62264897	667969.026389924	Stockholms län	Svensk Dagfjärilsövervakning, LU	141	Green urban areas	Urban	1
+726	Årby ängar	T	2	6585040.82602275	586278.919382686	Södermanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+923	N om Dalåsen	T	15	6583105.32709232	461069.900606905	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+922	Dalåsen, Bondhagen	T	5	6582804.91971584	461356.425564974	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+2890	Simängsvägen	T	1	6582335.37462177	517504.329256932	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+439	Johannelunds koloniträdgårdar	P	6	6581895.05091068	669605.158777292	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+536	Listrehagen	P	35	6581872.86944441	516624.23079875	Örebro län	Svensk Dagfjärilsövervakning, LU	242	Complex cultivation patterns	Cropland	1
+593	Listregården	P	7	6581819.97297645	516713.841172224	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3137	Lövnäset, Frösvidal	T	15	6581232.60627629	498258.414606896	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+535	Stormossen-Listrevägen	T	43	6580901.49423341	516566.017617954	Örebro län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+330	Ransäter Arboga	T	21	6580047.29385149	553348.628361826	Västmanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+218	Alviken	P	4	6579498.86316609	652713.175525507	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+638	Hult	T	4	6576942.50588885	375431.134388445	Värmlands län	Trafikverket	312	Coniferous forest	Forest	1
+367	Utterbäcksvägen 9	P	22	6576735.94218384	476763.883420969	Värmlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+3961	Lekatorp	P	8	6576615.18139576	515759.203024512	Örebro län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+256	Liseberg	T	1	6575966.03792807	672247.527415587	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+3136	Gilsåsen	T	31	6575808.33782405	490393.97765745	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+140	Nackareservatet	T	5	6574100.21354608	679918.888081152	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+457	Höje Furulund	T	10	6573850.99611732	451154.036494626	Värmlands län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+255	Wij, Lindhagen	T	23	6572987.22188169	558373.624179012	Södermanlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+2750	Eriksborg	P	20	6572807.61286762	508334.860006113	Örebro län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+141	Lillängen	T	4	6568441.14591035	670087.963653341	Stockholms län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+800	Ässkogstorp	P	2	6566659.36869776	515328.843488441	Örebro län	Svensk Dagfjärilsövervakning, LU	242	Complex cultivation patterns	Cropland	1
+138	Almsjöslingan 2	T	1	6563336.82295999	634847.282730261	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+139	Eldarevägen 21	P	2	6562488.3475088	638266.843463937	Stockholms län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+678	Källsbäck, Södra Ny	T	9	6559332.4693279	394875.798648013	Värmlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2712	Derbol	T	2	6556141.23835591	539017.245155311	Örebro län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+2711	Böneruds fornåkrar	T	2	6555548.28638879	536523.199551561	Örebro län	Svensk Dagfjärilsövervakning, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+620	Rosendalen	T	23	6554592.60292838	378899.891364145	Värmlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+1003	Årsta havsbad	T	43	6554183.74440515	681361.549909886	Stockholms län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2806	Inre Kilsviken	T	2	6553748.91764345	447562.687964534	Värmlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+143	Tumstocksfabriken/Mellösaverken	T	2	6551543.4949546	590411.107420863	Södermanlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+214	Tomtahagar	T	9	6545302.12916535	503357.123890084	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2809	Nolby, Herberts ängar	T	13	6545238.80673757	451564.823186391	Västra Götalands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+4274	Römossen	T	4	6543684.10548608	504467.263371925	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2648	Loppängarna, Muskö	T	2	6542902.97424501	679083.141559514	Stockholms län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+215	Tripphult	T	10	6542503.61454586	500580.898449021	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+426	Lövåsen, Billingsfors	T	2	6542000.20734939	341086.640511706	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+303	Höglunda, Hacksjön	P	2	6539318.44754649	620564.46947289	Södermanlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+2807	Råglanda	T	5	6537847.38413231	445723.485019863	Västra Götalands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+203	St Vika kalkstensbrott	T	22	6537722.31242831	661057.653721425	Södermanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3735	Stora Vika B	T	1	6537665.0993445	660873.376468838	Södermanlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+2813	SV om Älvstorp	T	3	6537337.78908496	446319.383268594	Västra Götalands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+364	Axsjöfallet S	T	2	6534760.2910951	506127.354901358	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+365	Axsjöfallet P	P	3	6534522.62084643	506893.951489515	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+321	Stensund	P	2	6531064.57959654	650448.882875999	Södermanlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+1095	Naverstads-Amunderöd	P	2	6528306.73103807	298738.8503851	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+1009	Boåsen 7563	T	1	6524814.75494448	449115.227448619	Västra Götalands län	Länsstyrelsen i Västra Götalands län	211	Non-irrigated arable land	Cropland	1
+1007	Boåsen 6378	T	1	6524767.49220518	449257.737504544	Västra Götalands län	Länsstyrelsen i Västra Götalands län	211	Non-irrigated arable land	Cropland	1
+217	Kullängsstugan	P	1	6524734.55687429	488179.738204677	Örebro län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+1008	Boåsen 6603	T	1	6524693.60571203	449513.521146455	Västra Götalands län	Länsstyrelsen i Västra Götalands län	211	Non-irrigated arable land	Cropland	1
+132	Åsnatorp, Närke	T	5	6524147.89155961	486031.612242612	Örebro län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+258	Åskärr	P	1	6524067.35083641	456856.033581479	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+322	Norra Askö	P	2	6523694.68359189	652168.385656987	Södermanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+453	Viksberget	P	5	6523434.29280799	641507.572511135	Södermanlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3745	Viksnäs	T	1	6522899.1098186	643060.713402081	Södermanlands län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+757	Ryr	T	1	6520860.40326869	354175.717790374	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2764	Logen, Olshammar	P	1	6515188.47676973	487793.864312635	Örebro län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+326	Järbo Berg 6	P	1	6513223.30162578	330171.714178311	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3128	Olshammar Ängatorp	T	1	6511736.01587693	487814.415649049	Örebro län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3226	Sötåsens naturbruksskola	T	2	6504873.42154947	449724.076205868	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+1098	Medevi	T	6	6504298.91237061	497219.422926074	Östergötlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+905	Skeppsvik	T	28	6499523.53538246	605776.123114422	Södermanlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+630	Bölets ängar	T	2	6497368.98363105	471972.291141499	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+613	Österplana vall	T	24	6492658.25936984	406841.935257793	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+2758	Soldatängen Motala	T	2	6491709.63321639	503974.307523033	Östergötlands län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+2780	Kårtorp, Norrköping	P	5	6489764.26718709	570168.614936388	Östergötlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+2683	Sundsbron Lelångebanan	T	35	6489189.68027748	324848.864468882	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+950	Postgården 2, Timmersdala	P	2	6488749.24543451	427667.401916807	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+3196	Stadsnära lantgård, Lidköping	T	7	6486052.81569435	389811.430766084	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2740	Svensvik, Åbyfjorden	T	1	6477526.38669582	289546.574323284	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	333	Sparsely vegetated areas	Sparse/no vegetation	1
+126	Gullmarsberg 511	P	4	6475330.43204459	303350.706917024	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+879	Norrhagen, 300 m V	T	2	6473424.00090877	557087.450829535	Östergötlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+332	Mötesplats virkesupplag Hunneberg	P	4	6468548.7782541	354570.43619408	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+331	Kalkvägen Ö Jonstorpsmossen Ringvägen Hunneberg	P	8	6467007.92255942	354430.987486635	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2708	Utsiktsgatan 5, Lysekil	P	1	6464676.46749528	290823.010302608	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+327	Jordbron, Skövde Skjutfält	T	101	6463547.22004337	435075.482349942	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2778	Västra ringvägen, norra delen	P	4	6463462.79473131	433284.278186564	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+722	Syntorp 1:17	P	1	6461197.21087168	588534.249053439	Östergötlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+897	KBs väg	T	12	6460687.13772454	347827.283808657	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+1057	Åsabacken	T	1	6460451.16761455	423270.812565547	Västra Götalands län	Länsstyrelsen i Västra Götalands län	211	Non-irrigated arable land	Cropland	1
+124	Öventorp, Kvarnängen	T	6	6456379.6818279	345425.189950277	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+128	Morkullen, Kåröd, Stillingsön, Orust	P	8	6455173.51646584	313801.337954659	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+206	Pelarbo punkt	P	16	6452648.6605842	486851.916888619	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2859	Pelarbo slinga	T	5	6452407.01135334	487040.737578474	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+207	Månsabola	T	4	6452073.85827717	485095.459782294	Östergötlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+123	Nyckleby Övergård 3	T	36	6450209.97621479	341161.39547024	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2684	Svenshögen	P	1	6448198.8549185	320342.107086557	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+311	Surklev	P	1	6446971.32019273	544420.050554979	Östergötlands län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+3563	Hallsta Mellankvarn	T	3	6444767.22117853	538249.34454364	Östergötlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+3749	Ödesängen	T	2	6441244.72361765	600359.982333108	Östergötlands län	Biogeografisk uppföljning av fjärilar, LU	211	Non-irrigated arable land	Cropland	1
+199	Berghamra	P	10	6441081.88000278	547409.542472064	Östergötlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+319	Kättilstad Berghamra	T	2	6440827.01203887	546995.715853981	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+755	Söderö skola 600 m SO	P	2	6438400.08960813	552463.056598013	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+198	Hultsjö 1-8, Gränna	P	6	6436846.62674985	476474.861883721	Kronobergs län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+3769	Grunneröd	T	2	6436164.92473493	330310.44280691	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+412	Remmene skjutfält	T	28	6435447.10651083	379898.6705111	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	322	Moors and heathland	Unmanaged grass/shrubland	1
+441	Åsenslingan	T	18	6435269.84109918	556465.259995461	Östergötlands län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+758	Stenbacken, Vistorp	T	2	6431898.43181561	422632.661108242	Västra Götalands län	Trafikverket	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+61	Svalsjö	T	39	6430712.86714821	525032.578622796	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+799	Fårö, St. Hoburga	T	2	6430365.33982655	748416.48122826	Gotlands län	Svensk Dagfjärilsövervakning, LU	333	Sparsely vegetated areas	Sparse/no vegetation	1
+888	Båstorp, Ale	T	2	6430257.09754863	330215.113840743	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+845	Ranebo	T	1	6430084.05228753	319993.97630151	Västra Götalands län	Trafikverket	312	Coniferous forest	Forest	1
+3737	Sundby	T	2	6427849.83130321	595151.272386541	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+113	Grostädeviken	T	1	6426534.02103942	731111.648068844	Gotlands län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+3694	Hellerö gård	T	4	6426432.04669819	596563.84143669	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+572	Ahrs Fiskeläge	T	4	6425909.81343113	733853.851932599	Gotlands län	Svensk Dagfjärilsövervakning, LU	331	Beaches - dunes - sands	Sparse/no vegetation	1
+3708	Löckås	T	4	6425806.74388381	598787.752287536	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+518	Blomsholm	T	47	6425228.98200515	414468.045765525	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3675	Averum	T	1	6424594.60728883	601097.650383159	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+3711	Mistekärr B	T	1	6422960.42184378	601300.100198308	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+3721	Råsdal	T	1	6422642.01858606	603774.299004497	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+3567	Odensvi Rutsbo	T	2	6422376.51363958	562068.539623359	Kalmar län	Svensk Dagfjärilsövervakning, LU	313	Mixed forest	Forest	1
+847	Linneberg, Tidersrum	P	2	6422221.48486906	528702.715289216	Östergötlands län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+3696	Hulöhamn A	T	1	6420693.23876407	605933.029538046	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	312	Coniferous forest	Forest	1
+293	Boarp, Vireda	T	11	6420524.23172158	477165.478495991	Jönköpings län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+411	Längs Nordre älv, Kungälv	T	2	6417590.06987724	319730.344115623	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+592	Bjärkefall, Hästhagen	P	1	6416854.77717776	531094.943750322	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+756	Bjärkefall slinga	T	10	6416854.77717776	531094.943750322	Östergötlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+446	Sandliden, Bohus	T	23	6415839.61748226	323881.860977379	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+107	Hällen, Angelbos	T	18	6413241.37892996	724664.847891691	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+1036	Långsered A	T	1	6412461.40830869	415266.005620799	Västra Götalands län	Länsstyrelsen i Västra Götalands län	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+1037	Långsered B	T	1	6412431.73721133	415376.308401286	Västra Götalands län	Länsstyrelsen i Västra Götalands län	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+193	Gripenbergsgatan, Norrängen	P	3	6407938.05822642	456933.66998059	Jönköpings län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+253	Sjögården	P	1	6407788.98677949	396506.590297965	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+3183	Rönnåsen	P	1	6405371.91308044	408990.434553229	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+111	Slite motionsslinga	T	49	6402116.5126366	725843.293614082	Gotlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+624	Ersdalens naturreservat	P	2	6400112.52004008	298616.189035638	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	333	Sparsely vegetated areas	Sparse/no vegetation	1
+3184	Nolskogen	P	3	6399983.43408408	411760.324800995	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+770	Kristiansfält-Osdal Borås	T	1	6397385.507829	375299.08286391	Västra Götalands län	Trafikverket	231	Pastures	Pasture/Rangeland	1
+846	Österås, N Byasjön	P	2	6397323.44312112	518347.881003396	Östergötlands län	Svensk Dagfjärilsövervakning, LU	242	Complex cultivation patterns	Cropland	1
+3304	Betesvallen Barkeryd	P	2	6397066.34450895	475902.506709054	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3898	Åhsbergska hagen, Visby 	P	2	6396209.19806477	698209.754903509	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+571	Risatorpet	P	7	6393919.47165014	495307.57528253	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+307	Tjelderstrand	P	4	6392615.90881573	724706.496238684	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+48	Blomstervägen 23	P	3	6390355.24356323	696720.59839017	Gotlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+185	Visby Kungsladugårdshällarna	T	1	6390286.45626321	694467.715044178	Gotlands län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+395	Alvered 1:14	P	2	6390220.85850262	322170.173468638	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	142	Sport and leisure facilities	Urban	1
+114	Gotlands Veteranbilsmuseum	P	1	6389719.08053536	694177.502214431	Gotlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+792	Sinnerum	P	4	6382058.55082643	587511.597147657	Kalmar län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+708	Nasumemyr, Tofta skjutfält	T	3	6381743.73621631	688084.1574405	Gotlands län	Svensk Dagfjärilsövervakning, LU	412	Peat bogs	Other	1
+526	Bådagården	T	1	6380656.11980441	333503.539245507	Hallands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+4060	Rönnstigen 15	P	4	6376034.93082724	688537.917221094	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+32	Gamla Mörtforsvägen	T	5	6374558.72244457	589130.264321542	Kalmar län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+4070	Ishult Ängsbacka punkt	P	6	6371123.91392455	576013.532335989	Kalmar län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+4071	Ishult slinga	T	3	6371113.68631472	576162.612926081	Kalmar län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+773	Backgården- Bäckaholm, Revesjö	T	2	6370132.84161785	383501.008744955	Västra Götalands län	Trafikverket	312	Coniferous forest	Forest	1
+704	Granstorp	P	2	6367967.22284731	518578.684373896	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+174	Buttlegårde 130	P	4	6367875.60598966	709985.053820434	Gotlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+173	Buttle Kalkbrott	P	5	6367562.87679094	709667.8017248	Gotlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+51	Bildstenar, Ängegård Buttle	T	2	6366883.55168567	710560.761253366	Gotlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+274	Fjäle ängar	T	4	6366578.54509692	717551.612931377	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+767	Grustäkt Holsljunga	P	1	6366442.26860993	376220.517495268	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+768	Skjutbana Holsljunga	P	2	6366297.39160775	375803.450679665	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+200	Tyrvalds 105	P	1	6366015.01726744	696601.774297468	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+766	Bredgården Holsljunga	P	1	6365803.02450981	377857.270724695	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3560	Skogslund, Rödja	T	1	6365672.22607488	487412.15577056	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3627	Smalspåret, Sävsjö	T	4	6362835.31985194	481175.199700748	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+44	Ljugarns föräldrakooperativ Bikupan	P	2	6361022.54916353	722729.996651553	Gotlands län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+368	Karintorp	P	10	6360201.89271996	524651.743629477	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+110	Nymans Fröjel - slinga	T	13	6359584.75266785	691448.735552738	Gotlands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+56	Mallgårds Klint	T	3	6357784.6016961	698416.157507787	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+57	Russparkens vinterhage	T	10	6357439.83544775	700793.943593631	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+961	Fröjel, Frejs väg	T	4	6356630.55115858	690722.859703966	Gotlands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2676	Lairu	P	4	6352985.71008601	717275.83640736	Gotlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+50	När Graunänge	P	4	6351692.22841361	720261.854460438	Gotlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2638	Toratorpet Mjöbäck	P	1	6351671.07862464	371433.206731068	Västra Götalands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+3115	Norrskog	T	12	6351257.20327428	496570.642046297	Jönköpings län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+55	Kodings 2:1	P	1	6348132.04262334	704596.773002611	Gotlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+45	Rone Domerarve	T	5	6346564.48356012	710106.693046148	Gotlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+219	Domerarve punkt	P	1	6346345.00762496	710233.27781764	Gotlands län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3929	Dödevi strandängar	T	56	6340886.15075546	625020.919531599	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+3936	Syd Gåsekärr	T	2	6338255.70826097	616905.831554346	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	324	Transitional woodland-shrub	Unmanaged grass/shrubland	1
+524	Gamla grustaget, Norrhult	P	6	6331946.83837268	511159.943979935	Kronobergs län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+3766	Prästakullens koloniområde	P	3	6331217.4514901	335405.897743276	Hallands län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+618	Gullaskruv	P	2	6303619.40977678	541236.358963365	Kalmar län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+4284	Skede ås	T	6	6301239.59356051	607790.043188313	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+3938	Skede ås södra	T	68	6300561.97094882	607469.105369874	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+485	Stibbetorp 106	P	2	6300396.46112722	540390.61785374	Kalmar län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+354	Slättingebygd	P	1	6300364.38753101	559814.062239899	Kalmar län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+575	Sörby Tall	P	2	6298598.45557517	605688.666625364	Kalmar län	Svensk Dagfjärilsövervakning, LU	243	Land principally occupied by agriculture with significant areas of natural vegetation	Cropland	1
+4245	Fjärilsslingan Karum	T	3	6295311.09814544	600922.545342565	Kalmar län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+37	Lammakulla Mellangård	T	143	6289876.47019509	451608.484145214	Kronobergs län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+3286	Fagerhults naturreservat	T	1	6289661.95456203	453510.20442196	Kronobergs län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+2885	Dyestad	T	9	6287309.54786221	600794.789530164	Kalmar län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+3285	Moen	T	1	6286910.24422371	455559.738118169	Kronobergs län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+480	Vapnö	T	3	6285217.36519115	367503.366550428	Hallands län	Svensk Dagfjärilsövervakning, LU	131	Mineral extraction sites	Urban	1
+973	Rosenborg	T	5	6282616.76128566	599270.381674842	Kalmar län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+38	Strandvägen	P	1	6279833.47121457	590514.320369383	Kalmar län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+100	Dörby Malm	P	15	6277365.96627765	600623.802353297	Kalmar län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+178	Djäknabygd, Stenbrohult socken	T	44	6274455.16372452	450514.400623052	Kronobergs län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+2880	Stora Frö	P	1	6269989.59238152	586989.942135891	Kalmar län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2908	Kleva strand	T	4	6267636.07816905	585701.926178237	Kalmar län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3928	Bjärby-Parteby alvar	T	4	6256381.94070109	590296.842026131	Kalmar län	Biogeografisk uppföljning av fjärilar, LU	333	Sparsely vegetated areas	Sparse/no vegetation	1
+240	Ulvered	T	4	6251804.64312344	384347.364389978	Hallands län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+498	Segerstad södra	T	1	6246980.10325686	595479.773742016	Kalmar län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+76	Linjevägen pkt 13 - slinga	T	4	6245227.63834264	496757.020750042	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+81	Bårabygd tåtelhörnet	P	2	6239433.28490756	504227.16613795	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+78	Bårabygd kfukslok	P	1	6239427.86067149	504703.057313592	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+79	Bårabygd klyvningen	P	17	6239397.81023408	504612.442070767	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+77	Bårabygd altanen	P	4	6239381.96345688	504539.654024813	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+80	Bårabygd ängen	P	7	6239356.63656837	504510.961049748	Blekinge län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+300	Lilla Silpinge - slinga	T	2	6238029.20360752	511605.968556935	Blekinge län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3271	Västerviks gård	P	1	6234879.78054584	463641.211430119	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+387	Klören	T	3	6232319.14507665	363644.565886053	Skåne län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+19	Vankiva skola	T	1	6229406.01386371	422621.236525137	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+634	Äppleskogen	P	2	6224593.95536616	361992.878972442	Skåne län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+1102	Ignaberga flygplats slinga 1	T	1	6221631.69221138	430495.573310389	Skåne län	Länsstyrelsen i Malmö län	211	Non-irrigated arable land	Cropland	1
+422	Barum 2:12	P	2	6220487.46890921	459428.340873895	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+603	Horsakärr	T	11	6218033.36199086	390891.579191414	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+550	Kjugekull slinga	T	1	6214751.86482757	460284.015525738	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+549	Kjugekull transekter	T	2	6214606.91140408	460539.602464482	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+659	Näsby fält - Norra transekter	T	12	6213999.4591586	445927.923400027	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+660	Näsby fält - Norra slinga	T	10	6213999.4591586	445927.923400027	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+661	Näsby fält - Södra transekter	T	2	6212811.6267727	446668.478296003	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+662	Näsby fält - Södra slinga	T	16	6212022.95871833	446153.914393944	Skåne län	Länsstyrelsen i Malmö län	142	Sport and leisure facilities	Urban	1
+202	Kungsborg	T	17	6210508.47693838	439634.464303345	Skåne län	Svensk Dagfjärilsövervakning, LU	131	Mineral extraction sites	Urban	1
+835	Tosteberga ängar transekter	T	1	6207628.71862732	466269.730122957	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+663	Norra Mosslunda transekter	T	12	6203587.85732458	443431.58733855	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+664	Norra Mosslunda slinga	T	18	6203587.85732458	443431.58733855	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+887	Rugerup	T	11	6202905.73172926	400209.656125095	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3950	Rinkaby skjutfält	T	1	6202141.24282574	457465.435476975	Skåne län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+635	Holma ängar	P	3	6202027.95534468	409960.162411423	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+74	Snogehall	T	1	6201322.56108703	407926.372836163	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2743	Östra Sandar, Rinkaby skjutfält	T	13	6200997.61197645	457455.782628933	Skåne län	Svensk Dagfjärilsövervakning, LU	312	Coniferous forest	Forest	1
+565	Södra Rörum N transekter	T	2	6198985.00392723	419953.931924631	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+668	Ry transekter	T	1	6198618.18661293	404353.658730505	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+1068	Älleköpinge slinga	T	4	6198516.57626713	451447.278261992	Skåne län	Länsstyrelsen i Malmö län	211	Non-irrigated arable land	Cropland	1
+242	Prästabonnens gård	T	2	6198509.73121052	416996.864840023	Skåne län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+842	Sånnarna slinga	T	1	6198333.29205281	453216.659215198	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+477	Mariedal - Östra Vram slinga 2	T	2	6198247.0064717	439299.722842703	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+543	Södra Rörum S slinga	T	1	6197888.49449581	420809.323143236	Skåne län	Länsstyrelsen i Malmö län	311	Broad-leaved forest	Forest	1
+839	Ekebo transekter	T	1	6197699.37457054	439824.877283236	Skåne län	Länsstyrelsen i Malmö län	211	Non-irrigated arable land	Cropland	1
+738	Danskens äng	T	23	6197556.66098706	416695.124505187	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+585	Flintabacken slinga	T	1	6196322.88823457	454480.566663217	Skåne län	Länsstyrelsen i Malmö län	312	Coniferous forest	Forest	1
+2884	Dösjebro-ån-gamla tippen	T	2	6188127.45185154	376050.275533986	Skåne län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+63	Trunelän, Maglehem	T	123	6181324.3380112	444952.437453613	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+3946	Kumlan	T	1	6180132.00302885	445566.050308094	Skåne län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+287	Fru Hammars väg 6	P	3	6175673.64242194	443648.77904404	Skåne län	Svensk Dagfjärilsövervakning, LU	112	Discontinuous urban fabric	Urban	1
+17	NV Krankesjön	T	7	6174534.28923638	404470.209251792	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+2949	Klammersbäck transekter	T	2	6174073.32122708	448116.447186567	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+4201	Vitemölla	T	6	6173930.96114514	449799.374746218	Skåne län	Biogeografisk uppföljning av fjärilar, LU	231	Pastures	Pasture/Rangeland	1
+643	Vitemölla strandbackar transekter	T	2	6173376.11350124	447986.614272845	Skåne län	Länsstyrelsen i Malmö län	211	Non-irrigated arable land	Cropland	1
+183	Silvåkratornet	P	1	6172718.46848745	405440.863202069	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+1085	Kaninlandet	T	1	6171198.68930745	400066.179417732	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3278	Dalby fälad no 5	T	2	6171012.42521251	398402.169686069	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+6	Rökepipan	T	4	6170800.35223422	396925.37038342	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+1069	Betesmark öster om Dalby, transekter	T	2	6169668.60031873	398015.991924706	Skåne län	Länsstyrelsen i Malmö län	231	Pastures	Pasture/Rangeland	1
+3918	naturum Stenshuvud, fjärilsslinga	T	8	6168018.62131051	454195.245733927	Skåne län	Svensk Dagfjärilsövervakning, LU	311	Broad-leaved forest	Forest	1
+735	Heden Stenshuvud	T	1	6167297.15374158	454300.588109481	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1
+529	Enehusa	P	1	6164227.12093436	403764.425635953	Skåne län	Artportalen, SLU	311	Broad-leaved forest	Forest	1
+14	Lyngby skola 182	P	1	6162662.55302098	394873.013875106	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+239	Västra Blentarp	P	1	6161733.26887706	410986.903869899	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+2924	Knösen, slinga	T	1	6145198.56081624	364811.443379511	Skåne län	Svensk Dagfjärilsövervakning, LU	211	Non-irrigated arable land	Cropland	1
+3575	Nybrofältet	T	4	6144503.47831474	432362.917345749	Skåne län	Svensk Dagfjärilsövervakning, LU	231	Pastures	Pasture/Rangeland	1

@@ -1,0 +1,7 @@
+HILDA+ class (code)	Model class	Suitability value	1899 km2	% land 1899	2019 km2	% land 2019	Change
+Unmanaged grass / shrubland (55)	Grassland	1.0	 1,815	3.27	   726	1.31	-60.0%
+Pasture / rangeland (33)	Grassland	1.0	 1,140	2.05	    59	0.11	-94.8%
+Cropland (22)	Cropland	0.5	11,418	20.56	 9,411	16.97	-17.6%
+Forest (44)	Forest	0.3	40,225	72.41	43,466	78.39	+8.1%
+Urban (11)	Urban	0.1	   952	1.71	 1,788	3.22	+87.8%
+Water, bare ground, outside area (0, 66, 77)	Unsuitable	0.0	-	-	-	-	-

@@ -1,3 +1,21 @@
 # Reference genome files
 01-data/ncbi_dataset/*
 !01-data/ncbi_dataset/.gitkeep
+
+# Large external landscape datasets
+01-data/CORINE/*
+!01-data/CORINE/.gitkeep
+
+01-data/HILDA/*
+!01-data/HILDA/.gitkeep
+
+# GBIF occurrence download
+01-data/gbif/*
+!01-data/gbif/.gitkeep
+
+# Generated suitability GeoTIFFs
+# SLiM-readable .txt inputs and grid metadata are retained
+03-model_input/suit_maps/*.tif
+
+# Local QGIS project file
+01-data/boundaries/*.qmd
