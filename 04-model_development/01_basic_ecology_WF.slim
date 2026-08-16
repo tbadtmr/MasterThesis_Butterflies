@@ -1,0 +1,228 @@
+// ============================================================
+// Model development: basic seasonal ecology (WF)
+//
+// Development version documenting the stepwise construction of
+// the simulation model for Cyaniris semiargus.
+//
+// Stage:
+//   Initial demographic proof-of-concept using a standard
+//   Wright-Fisher (WF) model.
+//
+// Key features:
+//   - one simulation cycle represents one annual generation
+//   - separate male and female adults
+//   - fixed fecundity per female
+//   - stochastic egg-to-adult survival
+//   - global carrying-capacity cap
+//   - no explicit spatial structure or individual dispersal
+//
+// Note:
+//   Development/prototype version retained for model provenance.
+//   This script was not used directly for the final thesis runs.
+//   Production models are provided in 05-burnin/ and
+//   06-simulation/.
+// ============================================================
+
+
+// ------------------------------------------------------------
+// LIFE CYCLE
+//
+// This initial prototype represents annual butterfly demography
+// at the population level.
+//
+// One cycle represents one season / generation:
+//
+//   1) Count reproductive females and males.
+//   2) Calculate total eggs produced by all females.
+//   3) Sample surviving recruits using fixed egg-to-adult
+//      survival.
+//   4) Limit the next generation to a global carrying capacity.
+//   5) Set the size of the next WF generation.
+//
+// Spatial structure, explicit individual reproduction and
+// habitat-dependent processes are introduced in later versions.
+// ------------------------------------------------------------
+
+
+initialize() {
+
+    // --------------------------------------------------------
+    // MODEL TYPE
+    // --------------------------------------------------------
+
+    initializeSLiMModelType("WF");
+
+    // Separate male and female individuals.
+    initializeSex("A");
+
+
+    // --------------------------------------------------------
+    // DEMOGRAPHY
+    // --------------------------------------------------------
+
+    defineConstant("N0", 100);
+
+    // Global maximum population size.
+    defineConstant("K", 300);
+
+
+    // --------------------------------------------------------
+    // REPRODUCTION
+    // --------------------------------------------------------
+
+    // Lifetime fecundity per female per season.
+    defineConstant("F_EGGS", 100);
+
+    // Egg-to-adult survival, representing survival through
+    // larval, pupal and overwintering stages.
+    defineConstant("S_total", 0.10);
+
+
+    // --------------------------------------------------------
+    // SIMULATION LENGTH
+    // --------------------------------------------------------
+
+    defineConstant("Tmax", 10);
+}
+
+
+// ============================================================
+// STARTING POPULATION
+// ============================================================
+
+1 early() {
+
+    sim.addSubpop(
+        "p1",
+        N0
+    );
+}
+
+
+// ============================================================
+// OUTPUT HEADER
+// ============================================================
+
+1 late() {
+
+    catn(
+        "cycle\tN_adults\tF_adults\tM_adults\t" +
+        "eggs_laid\trecruits_raw\trecruits_capped\tK"
+    );
+}
+
+
+// ============================================================
+// SEASONAL LIFE CYCLE
+// ============================================================
+
+1:Tmax early() {
+
+    inds = p1.individuals;
+
+    N = inds.size();
+
+    nF = sum(
+        inds.sex == "F"
+    );
+
+    nM = sum(
+        inds.sex == "M"
+    );
+
+
+    // --------------------------------------------------------
+    // REPRODUCTION
+    // --------------------------------------------------------
+
+    // Reproduction cannot occur if either sex is absent.
+    if (nF == 0 | nM == 0) {
+
+        eggs_laid = 0;
+
+        recruits_raw = 0;
+
+        recruits_capped = 0;
+
+
+        // No recruits means population extinction.
+        p1.setSubpopulationSize(0);
+    }
+
+    else {
+
+        // Total seasonal egg production.
+        eggs_laid =
+            nF * F_EGGS;
+
+
+        // ----------------------------------------------------
+        // EGG-TO-ADULT SURVIVAL
+        //
+        // Surviving recruits are sampled stochastically from
+        // all eggs produced during the season.
+        // ----------------------------------------------------
+
+        recruits_raw = rbinom(
+            1,
+            eggs_laid,
+            S_total
+        );
+
+
+        // ----------------------------------------------------
+        // GLOBAL POPULATION REGULATION
+        //
+        // This early model uses a single global cap rather than
+        // spatially explicit or habitat-dependent regulation.
+        // ----------------------------------------------------
+
+        recruits_capped =
+            recruits_raw;
+
+        if (recruits_capped > K)
+            recruits_capped = K;
+
+
+        // Keep at least two individuals when recruitment is
+        // non-zero so that both sexes can potentially occur in
+        // the following generation.
+        if (
+            recruits_capped > 0 &
+            recruits_capped < 2
+        )
+            recruits_capped = 2;
+
+
+        // Set the size of the next WF generation.
+        p1.setSubpopulationSize(
+            recruits_capped
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // REPORT SEASONAL DEMOGRAPHY
+    // --------------------------------------------------------
+
+    catn(
+        sim.cycle + "\t" +
+        N + "\t" +
+        nF + "\t" +
+        nM + "\t" +
+        eggs_laid + "\t" +
+        recruits_raw + "\t" +
+        recruits_capped + "\t" +
+        K
+    );
+}
+
+
+// ============================================================
+// END SIMULATION
+// ============================================================
+
+Tmax late() {
+
+    sim.simulationFinished();
+}

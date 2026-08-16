@@ -1,0 +1,417 @@
+// ============================================================
+// Model development: basic spatial nonWF framework
+//
+// Development version documenting the stepwise construction of
+// the spatial nonWF model for Cyaniris semiargus.
+//
+// Stage:
+//   Minimal discrete-generation spatial nonWF framework.
+//
+// Key features:
+//   - sexual reproduction with random mating
+//   - fixed fecundity and egg-to-recruit survival
+//   - simple Gaussian offspring dispersal
+//   - global carrying-capacity cap
+//   - complete annual adult turnover
+//
+// Note:
+//   Development/prototype version retained for model provenance.
+//   This script was not used directly for the final thesis runs.
+//   Production models are provided in 05-burnin/ and
+//   06-simulation/.
+// ============================================================
+
+
+// ------------------------------------------------------------
+// LIFE CYCLE
+//
+// One cycle represents one season:
+//
+//   1) Reproductive adults mate and females lay eggs.
+//   2) Eggs survive to recruits with probability S_total.
+//   3) Recruits are pooled and culled to a global population cap K.
+//   4) Adults die.
+//   5) Surviving recruits form the next generation.
+//
+// Space is included at this stage, but habitat suitability and
+// local density dependence are not yet implemented.
+// ------------------------------------------------------------
+
+
+initialize() {
+
+    // nonWF is required for explicit control of reproduction,
+    // survival and age structure.
+    initializeSLiMModelType("nonWF");
+
+    // Two-dimensional continuous space.
+    initializeSLiMOptions(dimensionality="xy");
+
+    // Separate male and female individuals.
+    initializeSex("A");
+
+
+    // --------------------------------------------------------
+    // DEMOGRAPHY
+    // --------------------------------------------------------
+
+    defineConstant("N0", 100);
+    defineConstant("K", 500);
+
+
+    // --------------------------------------------------------
+    // REPRODUCTION
+    // --------------------------------------------------------
+
+    defineConstant("F_EGGS", 100);
+    defineConstant("S_total", 0.10);
+
+
+    // --------------------------------------------------------
+    // SPACE
+    //
+    // Spatial units are arbitrary in this early development
+    // version. Later models link space to the landscape grid.
+    // --------------------------------------------------------
+
+    defineConstant("W", 1000.0);
+    defineConstant("H", 1000.0);
+
+    defineConstant("DISP_SD", 30.0);
+
+
+    // --------------------------------------------------------
+    // SIMULATION LENGTH
+    // --------------------------------------------------------
+
+    defineConstant("Tmax", 100);
+}
+
+
+// ============================================================
+// STARTING POPULATION
+// ============================================================
+
+1 first() {
+
+    // Create one population.
+    sim.addSubpop("p1", N0);
+
+    // Define spatial bounds.
+    p1.setSpatialBounds(c(
+        0.0,
+        0.0,
+        W,
+        H
+    ));
+
+    // Place founders randomly across the landscape.
+    for (ind in p1.individuals)
+        ind.setSpatialPosition(
+            p1.pointUniform()
+        );
+
+    // Founders begin as reproductive adults.
+    p1.individuals.age = 2;
+
+
+    // --------------------------------------------------------
+    // OUTPUT HEADER
+    // --------------------------------------------------------
+
+    catn(
+        "cycle\tN_end\tadultF\tadultM\t" +
+        "females_laid\teggs_laid\t" +
+        "recruits_created\trecruits_afterCull\tK"
+    );
+}
+
+
+// ============================================================
+// RESET COUNTERS EACH CYCLE
+// ============================================================
+
+1:Tmax first() {
+
+    sim.setValue(
+        "females_laid",
+        0
+    );
+
+    sim.setValue(
+        "eggs_laid",
+        0
+    );
+
+    sim.setValue(
+        "recruits_created",
+        0
+    );
+
+    sim.setValue(
+        "recruits_afterCull",
+        0
+    );
+}
+
+
+// ============================================================
+// REPRODUCTION
+//
+// Called once per female individual per cycle.
+// ============================================================
+
+1:Tmax reproduction(p1, "F") {
+
+    // Only reproductive adults lay eggs.
+    if (individual.age < 2)
+        return;
+
+
+    // --------------------------------------------------------
+    // MATE CHOICE
+    //
+    // At this early stage, females choose randomly among all
+    // reproductive males. Spatial mate choice is added later.
+    // --------------------------------------------------------
+
+    males = p1.individuals[
+        p1.individuals.sex == "M" &
+        p1.individuals.age >= 2
+    ];
+
+    if (males.size() == 0)
+        return;
+
+    mate = males[
+        sample(
+            0:(males.size() - 1),
+            1
+        )
+    ];
+
+
+    // --------------------------------------------------------
+    // FECUNDITY
+    // --------------------------------------------------------
+
+    sim.setValue(
+        "females_laid",
+        sim.getValue("females_laid") + 1
+    );
+
+    sim.setValue(
+        "eggs_laid",
+        sim.getValue("eggs_laid") + F_EGGS
+    );
+
+
+    // --------------------------------------------------------
+    // EGG-TO-RECRUIT SURVIVAL
+    //
+    // Number of recruits is sampled directly from a binomial
+    // distribution using fixed egg survival.
+    // --------------------------------------------------------
+
+    nRecruit = rbinom(
+        1,
+        F_EGGS,
+        S_total
+    );
+
+    if (nRecruit <= 0)
+        return;
+
+
+    momPos = individual.spatialPosition;
+
+
+    // --------------------------------------------------------
+    // CREATE RECRUITS
+    // --------------------------------------------------------
+
+    for (i in seqLen(nRecruit)) {
+
+        off = subpop.addCrossed(
+            individual,
+            mate
+        );
+
+        off.age = 0;
+
+
+        // ----------------------------------------------------
+        // DISPERSAL
+        //
+        // Simple Gaussian displacement around the maternal
+        // position. Habitat-biased dispersal is added later.
+        // ----------------------------------------------------
+
+        x = momPos[0] +
+            rnorm(
+                1,
+                0.0,
+                DISP_SD
+            );
+
+        y = momPos[1] +
+            rnorm(
+                1,
+                0.0,
+                DISP_SD
+            );
+
+
+        // Keep offspring within the spatial bounds.
+        if (x < 0.0)
+            x = 0.0;
+
+        if (x > W)
+            x = W;
+
+        if (y < 0.0)
+            y = 0.0;
+
+        if (y > H)
+            y = H;
+
+
+        off.setSpatialPosition(
+            c(x, y)
+        );
+    }
+
+
+    sim.setValue(
+        "recruits_created",
+        sim.getValue("recruits_created") +
+        nRecruit
+    );
+}
+
+
+// ============================================================
+// GLOBAL POPULATION REGULATION AND GENERATION TURNOVER
+//
+// Runs after reproduction callbacks for the cycle.
+// ============================================================
+
+1:Tmax early() {
+
+    inds = p1.individuals;
+
+
+    // Adults represent the reproductive generation.
+    adults = inds[
+        inds.age >= 2
+    ];
+
+
+    // Recruits are newborn individuals from the current cycle.
+    recruits = inds[
+        inds.age == 0
+    ];
+
+
+    // --------------------------------------------------------
+    // GLOBAL CARRYING-CAPACITY CAP
+    //
+    // At this stage population regulation is global rather
+    // than dependent on local habitat suitability or density.
+    // --------------------------------------------------------
+
+    if (recruits.size() > 0)
+        recruits.tag = 0;
+
+
+    if (recruits.size() > K) {
+
+        keep = sample(
+            recruits,
+            K
+        );
+
+        keep.tag = 1;
+
+        drop = setDifference(
+            recruits,
+            keep
+        );
+
+        drop.fitnessScaling = 0.0;
+    }
+
+    else {
+
+        recruits.tag = 1;
+    }
+
+
+    // Number of recruits marked to survive.
+    sim.setValue(
+        "recruits_afterCull",
+        sum(
+            recruits.tag == 1
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // ANNUAL ADULT TURNOVER
+    // --------------------------------------------------------
+
+    if (adults.size() > 0)
+        adults.fitnessScaling = 0.0;
+
+
+    // Surviving recruits become the next generation.
+    kept = recruits[
+        recruits.tag == 1
+    ];
+
+    if (kept.size() > 0)
+        kept.age = 1;
+}
+
+
+// ============================================================
+// REPORTING
+// ============================================================
+
+1:Tmax late() {
+
+    inds = p1.individuals;
+
+
+    // Age-1 individuals represent the newly recruited adult
+    // generation at the end of the cycle.
+    adultsNow = inds[
+        inds.age >= 1
+    ];
+
+
+    nF = sum(
+        adultsNow.sex == "F"
+    );
+
+    nM = sum(
+        adultsNow.sex == "M"
+    );
+
+
+    catn(
+        sim.cycle + "\t" +
+        p1.individualCount + "\t" +
+        nF + "\t" +
+        nM + "\t" +
+        sim.getValue("females_laid") + "\t" +
+        sim.getValue("eggs_laid") + "\t" +
+        sim.getValue("recruits_created") + "\t" +
+        sim.getValue("recruits_afterCull") + "\t" +
+        K
+    );
+
+
+    if (sim.cycle == Tmax)
+        sim.simulationFinished();
+}

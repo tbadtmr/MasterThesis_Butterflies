@@ -1,0 +1,1081 @@
+// ============================================================
+// Model development: suitability-based density dependence
+//
+// Development version documenting the stepwise construction of
+// the spatial nonWF model for Cyaniris semiargus.
+//
+// Stage:
+//   Replacement of the separate relative-capacity (relK) layer
+//   with local carrying capacity derived directly from habitat
+//   suitability.
+//
+// Builds on:
+//   06_local_carrying_capacity.slim
+//
+// Key additions:
+//   - removal of the separate relK landscape layer
+//   - local carrying capacity derived from habitat suitability
+//   - automatic scaling of per-pixel carrying capacity from a
+//     target landscape-wide population size
+//   - baseline local carrying capacity in lower-suitability
+//     habitat
+//   - density-dependence strength derived from effective
+//     fecundity and local carrying capacity
+//   - continued spatial mate choice and mixed local/LDD
+//     dispersal
+//
+// Note:
+//   Development/prototype version retained for model provenance.
+//
+//   This version represents an important transition toward the
+//   final production model: habitat suitability alone determines
+//   the spatial carrying-capacity surface, rather than using a
+//   separate monitoring-derived relK layer.
+//
+//   Local carrying capacity is defined as:
+//
+//       Kloc = KMIN_PER_PIXEL +
+//              KSCALE_PER_PIXEL * suit^GAMMA_K
+//
+//   and local density-dependence strength is derived as:
+//
+//       RHO = FECUN_EFF / ((1 + FECUN_EFF) * Kloc)
+//
+//   The 553 x 299 grid and parameter values used here are still
+//   intermediate development settings and differ from the final
+//   production model.
+//
+//   The reported "recruits_survived" value is a diagnostic count
+//   based on positive fitnessScaling before final viability
+//   selection rather than realised next-generation survival.
+//
+//   This script was not used directly for the final thesis runs.
+//   Production models are provided in 05-burnin/ and
+//   06-simulation/.
+// ============================================================
+
+
+// ------------------------------------------------------------
+// LIFE CYCLE
+//
+// One cycle represents one annual generation:
+//
+//   1) Adult females select mates using a spatial interaction
+//      kernel.
+//   2) Egg number is drawn from a Poisson distribution.
+//   3) Eggs survive to recruits with probability S_total.
+//   4) Recruits undergo local or rare long-distance dispersal.
+//   5) Settlement is restricted to usable habitat.
+//   6) Habitat suitability determines local carrying capacity.
+//   7) Local competition and carrying capacity determine
+//      density-dependent recruit survival.
+//   8) Adults die at the end of the season.
+//   9) Surviving recruits form the next generation.
+// ------------------------------------------------------------
+
+
+initialize() {
+
+    // --------------------------------------------------------
+    // MODEL TYPE
+    // --------------------------------------------------------
+
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(dimensionality="xy");
+    initializeSex("A");
+
+
+    // --------------------------------------------------------
+    // DEMOGRAPHY AND REPRODUCTION
+    // --------------------------------------------------------
+
+    defineConstant("N0", 500);
+
+    // Mean seasonal egg production per female.
+    defineConstant("MEAN_EGGS", 120.0);
+
+    // Upper limit on realised egg production.
+    defineConstant("EGG_MAX", 800);
+
+    // Baseline egg-to-recruit survival before local density
+    // dependence.
+    defineConstant("S_total", 0.08);
+
+
+    // Effective number of recruits produced per female before
+    // density-dependent regulation.
+    defineConstant(
+        "FECUN_EFF",
+        MEAN_EGGS * S_total
+    );
+
+
+    // --------------------------------------------------------
+    // SPACE
+    //
+    // Intermediate development landscape.
+    // --------------------------------------------------------
+
+    defineConstant("W", 553.0);
+    defineConstant("H", 299.0);
+
+
+    // Local dispersal scale.
+    defineConstant("DISP_SD", 0.3);
+
+    // Rare long-distance dispersal.
+    defineConstant("P_LDD", 0.01);
+    defineConstant("DISP_SD_LDD", 10.0);
+
+
+    // --------------------------------------------------------
+    // HABITAT-SUITABILITY LANDSCAPE
+    //
+    // Unlike previous development versions, only one landscape
+    // layer is used here. The separate relK layer has been
+    // removed.
+    // --------------------------------------------------------
+
+    defineConstant(
+        "map_suit_in",
+        "/home/tabea/MasterThesis/Model_Input/1899_suitability_flat.txt"
+    );
+
+
+    // Only very low/zero suitability is treated as non-habitat.
+    defineConstant("OPT_THRESH", 0.01);
+
+
+    // --------------------------------------------------------
+    // LOCAL DENSITY DEPENDENCE
+    // --------------------------------------------------------
+
+    // Competition-kernel standard deviation.
+    defineConstant("SI", 3.0);
+
+    // Maximum recruit survival after density-dependent scaling.
+    defineConstant("MAX_SURV", 0.95);
+
+
+    // --------------------------------------------------------
+    // LANDSCAPE-WIDE CAPACITY TARGET
+    //
+    // Used to scale local carrying capacity across the
+    // suitability landscape.
+    // --------------------------------------------------------
+
+    defineConstant("K_GLOBAL_TARGET", 15000.0);
+
+
+    // --------------------------------------------------------
+    // LOCAL CARRYING-CAPACITY SCALING
+    //
+    // Suitability enters Kloc as:
+    //
+    //   suit^GAMMA_K
+    //
+    // A value of 1 gives linear scaling.
+    // --------------------------------------------------------
+
+    defineConstant("GAMMA_K", 1.0);
+
+
+    // Baseline fraction of local carrying capacity.
+    //
+    // This prevents local capacity from becoming extremely
+    // concentrated in only the highest-suitability habitat.
+    //
+    // Kloc =
+    //     KMIN_PER_PIXEL +
+    //     KSCALE_PER_PIXEL * suit^GAMMA_K
+    //
+    defineConstant("K_BASE_FRAC", 0.2);
+
+
+    // --------------------------------------------------------
+    // SPATIAL MATE CHOICE
+    // --------------------------------------------------------
+
+    defineConstant("SM", 5.0);
+
+
+    // --------------------------------------------------------
+    // SIMULATION LENGTH
+    // --------------------------------------------------------
+
+    defineConstant("Tmax", 2000);
+
+
+    // --------------------------------------------------------
+    // SPATIAL INTERACTIONS
+    //
+    // i1 = local competition
+    // i2 = female-male mate choice
+    // --------------------------------------------------------
+
+    initializeInteractionType(
+        1,
+        "xy",
+        reciprocal=T,
+        maxDistance=SI * 3
+    );
+
+    // Normalized Gaussian competition kernel.
+    i1.setInteractionFunction(
+        "n",
+        1.0 / (2.0 * PI * SI^2),
+        SI
+    );
+
+
+    initializeInteractionType(
+        2,
+        "xy",
+        reciprocal=T,
+        maxDistance=SM * 3,
+        sexSegregation="FM"
+    );
+
+    i2.setInteractionFunction(
+        "n",
+        1.0,
+        SM
+    );
+}
+
+
+// ============================================================
+// STARTING POPULATION AND HABITAT LANDSCAPE
+// ============================================================
+
+1 first() {
+
+    // Create starting population.
+    sim.addSubpop("p1", N0);
+
+
+    // Match spatial bounds to the landscape grid.
+    p1.setSpatialBounds(
+        c(
+            0.0,
+            0.0,
+            W,
+            H
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // LOAD HABITAT-SUITABILITY MAP
+    // --------------------------------------------------------
+
+    Xs =
+        asFloat(
+            readFile(
+                map_suit_in
+            )
+        );
+
+
+    Xs =
+        matrix(
+            Xs,
+            nrow=asInteger(H),
+            ncol=asInteger(W),
+            byrow=T
+        );
+
+
+    p1.defineSpatialMap(
+        "suit",
+        "xy",
+        Xs,
+        interpolate=T,
+        valueRange=c(
+            0.0,
+            1.0
+        ),
+        colors=c(
+            "black",
+            "green"
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // SCALE LOCAL CARRYING CAPACITY
+    //
+    // Sum suitability across all cells considered usable and
+    // use the chosen landscape-wide target to derive an
+    // approximate carrying-capacity scale per pixel.
+    // --------------------------------------------------------
+
+    suitFlat =
+        asFloat(
+            readFile(
+                map_suit_in
+            )
+        );
+
+
+    sumSuitMasked =
+        0.0;
+
+
+    for (v in suitFlat)
+
+        if (v > OPT_THRESH)
+
+            sumSuitMasked =
+                sumSuitMasked + v;
+
+
+    defineConstant(
+        "SUM_SUIT_MASKED",
+        sumSuitMasked
+    );
+
+
+    defineConstant(
+        "K0_PER_PIXEL",
+        K_GLOBAL_TARGET /
+        SUM_SUIT_MASKED
+    );
+
+
+    // --------------------------------------------------------
+    // BASELINE + SUITABILITY-SCALED CAPACITY
+    // --------------------------------------------------------
+
+    defineConstant(
+        "KMIN_PER_PIXEL",
+        K0_PER_PIXEL *
+        K_BASE_FRAC
+    );
+
+
+    defineConstant(
+        "KSCALE_PER_PIXEL",
+        K0_PER_PIXEL *
+        (1.0 - K_BASE_FRAC)
+    );
+
+
+    // --------------------------------------------------------
+    // DEVELOPMENT DIAGNOSTICS
+    // --------------------------------------------------------
+
+    catn(
+        "Computed SUM_SUIT_MASKED = " +
+        SUM_SUIT_MASKED
+    );
+
+
+    catn(
+        "Auto K0_PER_PIXEL = " +
+        K0_PER_PIXEL
+    );
+
+
+    catn(
+        "K_BASE_FRAC = " +
+        K_BASE_FRAC
+    );
+
+
+    catn(
+        "KMIN_PER_PIXEL = " +
+        KMIN_PER_PIXEL +
+        " (baseline)"
+    );
+
+
+    catn(
+        "KSCALE_PER_PIXEL = " +
+        KSCALE_PER_PIXEL +
+        " (suitability-scaled)"
+    );
+
+
+    // Historical development diagnostic retained unchanged.
+    catn(
+        "Implied K_GLOBAL_MAP ≈ " +
+        (
+            KMIN_PER_PIXEL * SUM_SUIT_MASKED +
+            KSCALE_PER_PIXEL * SUM_SUIT_MASKED
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // PLACE FOUNDERS IN USABLE HABITAT
+    // --------------------------------------------------------
+
+    for (ind in p1.individuals) {
+
+        pos =
+            p1.pointUniform();
+
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                pos
+            );
+
+
+        while (s <= OPT_THRESH) {
+
+            pos =
+                p1.pointUniform();
+
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+        }
+
+
+        ind.setSpatialPosition(
+            pos
+        );
+    }
+
+
+    // Founders begin as reproductive adults.
+    p1.individuals.age = 2;
+
+
+    // --------------------------------------------------------
+    // OUTPUT HEADER
+    // --------------------------------------------------------
+
+    catn(
+        "cycle\tN_end\tadultF\tadultM\t" +
+        "females_laid\teggs_laid\t" +
+        "eggs_mean\teggs_sd\t" +
+        "recruits_created\trecruits_survived\t" +
+        "meanSuitAdults\tmeanCompRecr\t" +
+        "meanDDsurvRecr\tmeanKlocRecr\tmeanRHOrecr"
+    );
+}
+
+
+// ============================================================
+// RESET COUNTERS AND UPDATE MATE INTERACTIONS
+// ============================================================
+
+1:Tmax first() {
+
+    sim.setValue(
+        "females_laid",
+        0
+    );
+
+    sim.setValue(
+        "eggs_laid",
+        0
+    );
+
+    sim.setValue(
+        "eggs_sq_laid",
+        0
+    );
+
+    sim.setValue(
+        "recruits_created",
+        0
+    );
+
+    sim.setValue(
+        "recruits_survived",
+        0
+    );
+
+    sim.setValue(
+        "meanCompRecr",
+        0.0
+    );
+
+    sim.setValue(
+        "meanDDsurvRecr",
+        0.0
+    );
+
+    sim.setValue(
+        "meanKlocRecr",
+        0.0
+    );
+
+    sim.setValue(
+        "meanRHOrecr",
+        0.0
+    );
+
+
+    // Update spatial mate-search neighborhoods.
+    i2.evaluate(p1);
+}
+
+
+// ============================================================
+// REPRODUCTION
+// ============================================================
+
+1:Tmax reproduction(p1, "F") {
+
+    // Only reproductive adults reproduce.
+    if (individual.age < 2)
+        return;
+
+
+    // --------------------------------------------------------
+    // SPATIAL MATE CHOICE
+    // --------------------------------------------------------
+
+    mate =
+        i2.drawByStrength(
+            individual,
+            1
+        );
+
+
+    if (mate.size() == 0)
+        return;
+
+
+    // --------------------------------------------------------
+    // FECUNDITY
+    // --------------------------------------------------------
+
+    nEggs =
+        rpois(
+            1,
+            MEAN_EGGS
+        );
+
+
+    if (nEggs > EGG_MAX)
+        nEggs = EGG_MAX;
+
+
+    if (nEggs <= 0)
+        return;
+
+
+    sim.setValue(
+        "females_laid",
+        sim.getValue("females_laid") + 1
+    );
+
+
+    sim.setValue(
+        "eggs_laid",
+        sim.getValue("eggs_laid") +
+        nEggs
+    );
+
+
+    sim.setValue(
+        "eggs_sq_laid",
+        sim.getValue("eggs_sq_laid") +
+        (nEggs * nEggs)
+    );
+
+
+    momPos =
+        individual.spatialPosition;
+
+
+    // --------------------------------------------------------
+    // EGG-TO-RECRUIT SURVIVAL
+    // --------------------------------------------------------
+
+    nRecruit =
+        rbinom(
+            1,
+            nEggs,
+            S_total
+        );
+
+
+    if (nRecruit <= 0)
+        return;
+
+
+    // --------------------------------------------------------
+    // CREATE AND DISPERSE RECRUITS
+    // --------------------------------------------------------
+
+    for (i in seqLen(nRecruit)) {
+
+        off =
+            subpop.addCrossed(
+                individual,
+                mate
+            );
+
+
+        off.age =
+            0;
+
+
+        // ----------------------------------------------------
+        // LOCAL VS LONG-DISTANCE DISPERSAL
+        // ----------------------------------------------------
+
+        sdHere =
+            DISP_SD;
+
+
+        if (runif(1) < P_LDD)
+
+            sdHere =
+                DISP_SD_LDD;
+
+
+        // Initial dispersal proposal.
+        x =
+            momPos[0] +
+            rnorm(
+                1,
+                0.0,
+                sdHere
+            );
+
+
+        y =
+            momPos[1] +
+            rnorm(
+                1,
+                0.0,
+                sdHere
+            );
+
+
+        // Keep coordinates within the model landscape.
+        if (x < 0.0)
+            x = 0.0;
+
+        if (x > W)
+            x = W;
+
+        if (y < 0.0)
+            y = 0.0;
+
+        if (y > H)
+            y = H;
+
+
+        pos =
+            c(
+                x,
+                y
+            );
+
+
+        // ----------------------------------------------------
+        // HABITAT-RESTRICTED SETTLEMENT
+        //
+        // Retry a small number of times if dispersal lands in
+        // effectively non-habitat.
+        // ----------------------------------------------------
+
+        tries =
+            0;
+
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                pos
+            );
+
+
+        while (
+            s <= OPT_THRESH &
+            tries < 10
+        ) {
+
+            x =
+                momPos[0] +
+                rnorm(
+                    1,
+                    0.0,
+                    sdHere
+                );
+
+
+            y =
+                momPos[1] +
+                rnorm(
+                    1,
+                    0.0,
+                    sdHere
+                );
+
+
+            if (x < 0.0)
+                x = 0.0;
+
+            if (x > W)
+                x = W;
+
+            if (y < 0.0)
+                y = 0.0;
+
+            if (y > H)
+                y = H;
+
+
+            pos =
+                c(
+                    x,
+                    y
+                );
+
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+
+
+            tries =
+                tries + 1;
+        }
+
+
+        off.setSpatialPosition(
+            pos
+        );
+
+
+        // Cull recruit if it remains in effectively non-habitat
+        // after all settlement attempts.
+        if (s <= OPT_THRESH)
+
+            off.fitnessScaling =
+                0.0;
+    }
+
+
+    sim.setValue(
+        "recruits_created",
+        sim.getValue("recruits_created") +
+        nRecruit
+    );
+}
+
+
+// ============================================================
+// SUITABILITY-BASED DENSITY DEPENDENCE AND TURNOVER
+// ============================================================
+
+1:Tmax early() {
+
+    inds =
+        p1.individuals;
+
+
+    adults =
+        inds[
+            inds.age >= 2
+        ];
+
+
+    recruits =
+        inds[
+            inds.age == 0
+        ];
+
+
+    // Update local competition neighborhoods.
+    i1.evaluate(p1);
+
+
+    if (recruits.size() > 0) {
+
+        // ----------------------------------------------------
+        // LOCAL CROWDING
+        // ----------------------------------------------------
+
+        comp =
+            i1.totalOfNeighborStrengths(
+                recruits
+            );
+
+
+        posR =
+            recruits.spatialPosition;
+
+
+        suitR =
+            pmax(
+                0.0,
+                p1.spatialMapValue(
+                    "suit",
+                    posR
+                )
+            );
+
+
+        // ----------------------------------------------------
+        // LOCAL CARRYING CAPACITY
+        //
+        // This is the major change from the preceding
+        // development version: Kloc now depends directly on
+        // habitat suitability rather than relK.
+        // ----------------------------------------------------
+
+        Kloc =
+            KMIN_PER_PIXEL +
+            KSCALE_PER_PIXEL *
+            (suitR^GAMMA_K) +
+            1e-9;
+
+
+        // ----------------------------------------------------
+        // DENSITY-DEPENDENCE SCALING
+        //
+        // RHO is no longer a single manually chosen constant.
+        // It depends on effective fecundity and local carrying
+        // capacity.
+        // ----------------------------------------------------
+
+        RHO =
+            FECUN_EFF /
+            (
+                (1.0 + FECUN_EFF) *
+                Kloc
+            );
+
+
+        // ----------------------------------------------------
+        // DENSITY-DEPENDENT RECRUIT SURVIVAL
+        // ----------------------------------------------------
+
+        den =
+            suitR +
+            RHO * comp +
+            1e-12;
+
+
+        dd =
+            suitR /
+            den;
+
+
+        // Numerical bounds.
+        dd =
+            pmax(
+                0.0,
+                dd
+            );
+
+
+        dd =
+            pmin(
+                MAX_SURV,
+                dd
+            );
+
+
+        recruits.fitnessScaling =
+            recruits.fitnessScaling *
+            dd;
+
+
+        // ----------------------------------------------------
+        // DEVELOPMENT DIAGNOSTICS
+        // ----------------------------------------------------
+
+        sim.setValue(
+            "meanCompRecr",
+            mean(comp)
+        );
+
+
+        sim.setValue(
+            "meanDDsurvRecr",
+            mean(dd)
+        );
+
+
+        sim.setValue(
+            "meanKlocRecr",
+            mean(Kloc)
+        );
+
+
+        sim.setValue(
+            "meanRHOrecr",
+            mean(RHO)
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // ANNUAL ADULT TURNOVER
+    // --------------------------------------------------------
+
+    if (adults.size() > 0)
+
+        adults.fitnessScaling =
+            0.0;
+
+
+    if (recruits.size() > 0)
+
+        recruits.age =
+            2;
+
+
+    // Diagnostic count before final viability selection.
+    sim.setValue(
+        "recruits_survived",
+        sum(
+            recruits.fitnessScaling > 0.0
+        )
+    );
+}
+
+
+// ============================================================
+// REPORTING
+// ============================================================
+
+1:Tmax late() {
+
+    inds =
+        p1.individuals;
+
+
+    adultsNow =
+        inds[
+            inds.age >= 2
+        ];
+
+
+    nF =
+        sum(
+            adultsNow.sex == "F"
+        );
+
+
+    nM =
+        sum(
+            adultsNow.sex == "M"
+        );
+
+
+    fLaid =
+        sim.getValue(
+            "females_laid"
+        );
+
+
+    eggsTotal =
+        sim.getValue(
+            "eggs_laid"
+        );
+
+
+    eggsSq =
+        sim.getValue(
+            "eggs_sq_laid"
+        );
+
+
+    // --------------------------------------------------------
+    // FECUNDITY SUMMARY
+    // --------------------------------------------------------
+
+    eggsMean =
+        0.0;
+
+
+    eggsSD =
+        0.0;
+
+
+    if (fLaid > 0) {
+
+        eggsMean =
+            eggsTotal /
+            fLaid;
+
+
+        ex2 =
+            eggsSq /
+            fLaid;
+
+
+        var =
+            ex2 -
+            (eggsMean * eggsMean);
+
+
+        if (var < 0.0)
+            var = 0.0;
+
+
+        eggsSD =
+            sqrt(var);
+    }
+
+
+    // --------------------------------------------------------
+    // HABITAT SUMMARY
+    // --------------------------------------------------------
+
+    meanSuitAdults =
+        0.0;
+
+
+    if (adultsNow.size() > 0) {
+
+        posA =
+            adultsNow.spatialPosition;
+
+
+        meanSuitAdults =
+            mean(
+                p1.spatialMapValue(
+                    "suit",
+                    posA
+                )
+            );
+    }
+
+
+    // --------------------------------------------------------
+    // OUTPUT
+    // --------------------------------------------------------
+
+    catn(
+        sim.cycle + "\t" +
+        p1.individualCount + "\t" +
+        nF + "\t" +
+        nM + "\t" +
+        fLaid + "\t" +
+        eggsTotal + "\t" +
+        eggsMean + "\t" +
+        eggsSD + "\t" +
+        sim.getValue("recruits_created") + "\t" +
+        sim.getValue("recruits_survived") + "\t" +
+        meanSuitAdults + "\t" +
+        sim.getValue("meanCompRecr") + "\t" +
+        sim.getValue("meanDDsurvRecr") + "\t" +
+        sim.getValue("meanKlocRecr") + "\t" +
+        sim.getValue("meanRHOrecr")
+    );
+
+
+    if (sim.cycle == Tmax)
+
+        sim.simulationFinished();
+}

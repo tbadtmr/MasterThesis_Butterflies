@@ -1,0 +1,908 @@
+// ============================================================
+// Model development: suitability + relative-capacity proxy
+//
+// Development version documenting the stepwise construction of
+// the spatial nonWF model for Cyaniris semiargus.
+//
+// Stage:
+//   Addition of a second landscape layer representing relative
+//   habitat capacity, combined with habitat suitability into a
+//   single spatial habitat-quality proxy.
+//
+// Builds on:
+//   03_habitat_map.slim
+//
+// Key additions:
+//   - separate habitat-suitability and relative-capacity maps
+//   - combined habitat proxy defined as suit * relK
+//   - founder placement based on the combined habitat proxy
+//   - offspring settlement based on the combined habitat proxy
+//   - optional egg-to-recruit survival scaling by suit * relK
+//   - reporting of mean suitability, relK and combined habitat
+//     values among adults
+//
+// Note:
+//   Development/prototype version retained for model provenance.
+//
+//   In this version, relK is not yet used as an explicit local
+//   carrying capacity. The combined suit * relK value controls
+//   habitat occupancy/settlement, while demographic regulation
+//   remains a single global population cap (K = 500).
+//
+//   The 553 x 299 grid and relK layer were intermediate model
+//   configurations and were not retained in the final production
+//   model.
+//
+//   Optional habitat-dependent survival is implemented but
+//   disabled in this version (USE_OPT_SURVIVAL = F).
+//
+//   This script was not used directly for the final thesis runs.
+//   Production models are provided in 05-burnin/ and
+//   06-simulation/.
+// ============================================================
+
+
+// ------------------------------------------------------------
+// LIFE CYCLE
+//
+// One cycle represents one annual generation:
+//
+//   1) Reproductive females choose a male.
+//   2) Female egg production is drawn from a Poisson
+//      distribution.
+//   3) Eggs survive to recruits with probability S_total.
+//   4) Recruits disperse around their mother's position.
+//   5) Settlement is restricted using the combined habitat
+//      proxy:
+//          opt = suit * relK
+//   6) Recruits are limited by a global population cap.
+//   7) Adults die and surviving recruits form the next
+//      generation.
+//
+// At this stage, landscape information affects occupancy and
+// settlement, but population regulation is still global.
+// ------------------------------------------------------------
+
+
+initialize() {
+
+    // --------------------------------------------------------
+    // MODEL TYPE
+    // --------------------------------------------------------
+
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(dimensionality="xy");
+    initializeSex("A");
+
+
+    // --------------------------------------------------------
+    // DEMOGRAPHY
+    // --------------------------------------------------------
+
+    defineConstant("N0", 100);
+
+    // Population regulation remains global at this stage.
+    defineConstant("K", 500);
+
+
+    // --------------------------------------------------------
+    // FECUNDITY
+    // --------------------------------------------------------
+
+    // Mean seasonal egg production per reproducing female.
+    defineConstant("MEAN_EGGS", 232.0);
+
+    // Upper limit on realised egg production.
+    defineConstant("EGG_MAX", 800);
+
+    // Composite egg-to-next-year-adult survival.
+    defineConstant("S_total", 0.10);
+
+
+    // --------------------------------------------------------
+    // LANDSCAPE INPUTS
+    //
+    // Two spatial layers are used:
+    //
+    //   suit = habitat suitability
+    //   relK = relative capacity proxy derived during model
+    //          development
+    //
+    // Their product is used as a combined habitat proxy:
+    //
+    //   opt = suit * relK
+    // --------------------------------------------------------
+
+    defineConstant(
+        "map_suit_in",
+        "/home/tabea/MasterThesis/Model_Input/1899_suitability_flat.txt"
+    );
+
+    defineConstant(
+        "map_relK_in",
+        "/home/tabea/MasterThesis/Model_Input/relK_1899_flat.txt"
+    );
+
+
+    // Positions with combined habitat values at or below this
+    // threshold are treated as unusable.
+    defineConstant("OPT_THRESH", 0.05);
+
+
+    // Experimental option to multiply egg-to-recruit survival
+    // by maternal opt = suit * relK.
+    //
+    // Disabled in this development version.
+    defineConstant("USE_OPT_SURVIVAL", F);
+
+
+    // --------------------------------------------------------
+    // SPACE
+    //
+    // Dimensions correspond to the intermediate raster grid
+    // used during this stage of development.
+    // --------------------------------------------------------
+
+    defineConstant("W", 553.0);
+    defineConstant("H", 299.0);
+
+    defineConstant("DISP_SD", 30.0);
+
+
+    // --------------------------------------------------------
+    // SIMULATION LENGTH
+    // --------------------------------------------------------
+
+    defineConstant("Tmax", 100);
+}
+
+
+// ============================================================
+// STARTING POPULATION AND LANDSCAPE MAPS
+// ============================================================
+
+1 first() {
+
+    // Create population.
+    sim.addSubpop("p1", N0);
+
+    // Match spatial bounds to the raster grid.
+    p1.setSpatialBounds(
+        c(
+            0.0,
+            0.0,
+            W,
+            H
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // LOAD HABITAT-SUITABILITY MAP
+    // --------------------------------------------------------
+
+    Xs = readFile(
+        map_suit_in
+    );
+
+    Xs = asFloat(
+        Xs
+    );
+
+    Xs = matrix(
+        Xs,
+        nrow=asInteger(H),
+        ncol=asInteger(W),
+        byrow=T
+    );
+
+
+    // --------------------------------------------------------
+    // LOAD RELATIVE-CAPACITY MAP
+    // --------------------------------------------------------
+
+    Xk = readFile(
+        map_relK_in
+    );
+
+    Xk = asFloat(
+        Xk
+    );
+
+    Xk = matrix(
+        Xk,
+        nrow=asInteger(H),
+        ncol=asInteger(W),
+        byrow=T
+    );
+
+
+    // --------------------------------------------------------
+    // DEFINE SPATIAL MAPS
+    // --------------------------------------------------------
+
+    p1.defineSpatialMap(
+        "suit",
+        "xy",
+        Xs,
+        interpolate=T,
+        valueRange=c(
+            0.0,
+            1.0
+        ),
+        colors=c(
+            "black",
+            "green"
+        )
+    );
+
+
+    p1.defineSpatialMap(
+        "relK",
+        "xy",
+        Xk,
+        interpolate=T,
+        valueRange=c(
+            0.0,
+            1.0
+        ),
+        colors=c(
+            "black",
+            "green"
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // PLACE FOUNDERS USING COMBINED HABITAT PROXY
+    //
+    // opt = suit * relK
+    // --------------------------------------------------------
+
+    for (ind in p1.individuals) {
+
+        pos =
+            p1.pointUniform();
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                pos
+            );
+
+        k =
+            p1.spatialMapValue(
+                "relK",
+                pos
+            );
+
+        opt =
+            s * k;
+
+
+        while (opt <= OPT_THRESH) {
+
+            pos =
+                p1.pointUniform();
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+
+            k =
+                p1.spatialMapValue(
+                    "relK",
+                    pos
+                );
+
+            opt =
+                s * k;
+        }
+
+
+        ind.setSpatialPosition(
+            pos
+        );
+    }
+
+
+    // Founders begin as reproductive adults.
+    p1.individuals.age = 2;
+
+
+    // --------------------------------------------------------
+    // OUTPUT HEADER
+    // --------------------------------------------------------
+
+    catn(
+        "cycle\tN_end\tadultF\tadultM\t" +
+        "females_laid\teggs_laid\t" +
+        "eggs_mean_perFemale\teggs_sd_perFemale\t" +
+        "recruits_created\trecruits_afterCull\tK\t" +
+        "meanSuit\tmeanRelK\tmeanOpt"
+    );
+}
+
+
+// ============================================================
+// RESET COUNTERS EACH CYCLE
+// ============================================================
+
+1:Tmax first() {
+
+    sim.setValue(
+        "females_laid",
+        0
+    );
+
+    sim.setValue(
+        "eggs_laid",
+        0
+    );
+
+    sim.setValue(
+        "eggs_sq_laid",
+        0
+    );
+
+    sim.setValue(
+        "recruits_created",
+        0
+    );
+
+    sim.setValue(
+        "recruits_afterCull",
+        0
+    );
+}
+
+
+// ============================================================
+// REPRODUCTION
+// ============================================================
+
+1:Tmax reproduction(p1, "F") {
+
+    // Only reproductive adults reproduce.
+    if (individual.age < 2)
+        return;
+
+
+    // --------------------------------------------------------
+    // MATE CHOICE
+    //
+    // Mate choice is still spatially unrestricted at this
+    // development stage.
+    // --------------------------------------------------------
+
+    males =
+        p1.individuals[
+            p1.individuals.sex == "M" &
+            p1.individuals.age >= 2
+        ];
+
+
+    if (males.size() == 0)
+        return;
+
+
+    mate =
+        males[
+            sample(
+                0:(males.size() - 1),
+                1
+            )
+        ];
+
+
+    // --------------------------------------------------------
+    // FECUNDITY
+    // --------------------------------------------------------
+
+    nEggs =
+        rpois(
+            1,
+            MEAN_EGGS
+        );
+
+
+    if (nEggs > EGG_MAX)
+        nEggs = EGG_MAX;
+
+
+    if (nEggs <= 0)
+        return;
+
+
+    // --------------------------------------------------------
+    // REPRODUCTION BOOKKEEPING
+    // --------------------------------------------------------
+
+    sim.setValue(
+        "females_laid",
+        sim.getValue("females_laid") + 1
+    );
+
+    sim.setValue(
+        "eggs_laid",
+        sim.getValue("eggs_laid") +
+        nEggs
+    );
+
+    sim.setValue(
+        "eggs_sq_laid",
+        sim.getValue("eggs_sq_laid") +
+        (nEggs * nEggs)
+    );
+
+
+    momPos =
+        individual.spatialPosition;
+
+
+    // --------------------------------------------------------
+    // EGG-TO-RECRUIT SURVIVAL
+    // --------------------------------------------------------
+
+    survP =
+        S_total;
+
+
+    // Experimental maternal habitat scaling.
+    //
+    // When enabled:
+    //
+    //   survival = S_total * (suit * relK)
+    //
+    // This is disabled in this version.
+    if (USE_OPT_SURVIVAL) {
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                momPos
+            );
+
+        k =
+            p1.spatialMapValue(
+                "relK",
+                momPos
+            );
+
+        opt =
+            s * k;
+
+        survP =
+            S_total * opt;
+    }
+
+
+    nRecruit =
+        rbinom(
+            1,
+            nEggs,
+            survP
+        );
+
+
+    if (nRecruit <= 0)
+        return;
+
+
+    // --------------------------------------------------------
+    // CREATE AND DISPERSE RECRUITS
+    // --------------------------------------------------------
+
+    for (i in seqLen(nRecruit)) {
+
+        off =
+            subpop.addCrossed(
+                individual,
+                mate
+            );
+
+        off.age = 0;
+
+
+        // Initial Gaussian dispersal proposal.
+        x =
+            momPos[0] +
+            rnorm(
+                1,
+                0.0,
+                DISP_SD
+            );
+
+        y =
+            momPos[1] +
+            rnorm(
+                1,
+                0.0,
+                DISP_SD
+            );
+
+
+        // Keep proposed location within model bounds.
+        if (x < 0.0)
+            x = 0.0;
+
+        if (x > W)
+            x = W;
+
+        if (y < 0.0)
+            y = 0.0;
+
+        if (y > H)
+            y = H;
+
+
+        pos =
+            c(
+                x,
+                y
+            );
+
+
+        // ----------------------------------------------------
+        // COMBINED HABITAT VALUE AT OFFSPRING LOCATION
+        // ----------------------------------------------------
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                pos
+            );
+
+        k =
+            p1.spatialMapValue(
+                "relK",
+                pos
+            );
+
+        opt =
+            s * k;
+
+
+        // ----------------------------------------------------
+        // HABITAT-RESTRICTED SETTLEMENT
+        //
+        // If the initial position is unsuitable according to
+        // the combined habitat proxy, redraw a position up to
+        // ten times.
+        // ----------------------------------------------------
+
+        tries = 0;
+
+
+        while (
+            opt <= OPT_THRESH &
+            tries < 10
+        ) {
+
+            x =
+                momPos[0] +
+                rnorm(
+                    1,
+                    0.0,
+                    DISP_SD
+                );
+
+            y =
+                momPos[1] +
+                rnorm(
+                    1,
+                    0.0,
+                    DISP_SD
+                );
+
+
+            if (x < 0.0)
+                x = 0.0;
+
+            if (x > W)
+                x = W;
+
+            if (y < 0.0)
+                y = 0.0;
+
+            if (y > H)
+                y = H;
+
+
+            pos =
+                c(
+                    x,
+                    y
+                );
+
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+
+            k =
+                p1.spatialMapValue(
+                    "relK",
+                    pos
+                );
+
+            opt =
+                s * k;
+
+
+            tries =
+                tries + 1;
+        }
+
+
+        off.setSpatialPosition(
+            pos
+        );
+
+
+        // If no suitable position was found after ten attempts,
+        // mark the recruit for removal.
+        if (opt <= OPT_THRESH)
+            off.fitnessScaling = 0.0;
+    }
+
+
+    sim.setValue(
+        "recruits_created",
+        sim.getValue("recruits_created") +
+        nRecruit
+    );
+}
+
+
+// ============================================================
+// GLOBAL POPULATION REGULATION AND GENERATION TURNOVER
+// ============================================================
+
+1:Tmax early() {
+
+    inds =
+        p1.individuals;
+
+
+    adults =
+        inds[
+            inds.age >= 2
+        ];
+
+
+    recruits =
+        inds[
+            inds.age == 0
+        ];
+
+
+    // --------------------------------------------------------
+    // GLOBAL CARRYING-CAPACITY CAP
+    //
+    // Despite the addition of relK, this version still uses
+    // one global K. Spatially explicit density dependence is
+    // introduced in later development stages.
+    // --------------------------------------------------------
+
+    if (recruits.size() > 0)
+        recruits.tag = 0;
+
+
+    if (recruits.size() > K) {
+
+        keep =
+            sample(
+                recruits,
+                K
+            );
+
+        keep.tag = 1;
+
+
+        drop =
+            setDifference(
+                recruits,
+                keep
+            );
+
+        drop.fitnessScaling = 0.0;
+    }
+
+    else {
+
+        recruits.tag = 1;
+    }
+
+
+    sim.setValue(
+        "recruits_afterCull",
+        sum(
+            recruits.tag == 1
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // ANNUAL ADULT TURNOVER
+    // --------------------------------------------------------
+
+    if (adults.size() > 0)
+        adults.fitnessScaling = 0.0;
+
+
+    kept =
+        recruits[
+            recruits.tag == 1
+        ];
+
+
+    if (kept.size() > 0)
+        kept.age = 2;
+}
+
+
+// ============================================================
+// REPORTING
+// ============================================================
+
+1:Tmax late() {
+
+    inds =
+        p1.individuals;
+
+
+    adultsNow =
+        inds[
+            inds.age >= 2
+        ];
+
+
+    nF =
+        sum(
+            adultsNow.sex == "F"
+        );
+
+
+    nM =
+        sum(
+            adultsNow.sex == "M"
+        );
+
+
+    fLaid =
+        sim.getValue(
+            "females_laid"
+        );
+
+
+    eggsTotal =
+        sim.getValue(
+            "eggs_laid"
+        );
+
+
+    eggsSq =
+        sim.getValue(
+            "eggs_sq_laid"
+        );
+
+
+    // --------------------------------------------------------
+    // FECUNDITY SUMMARY
+    // --------------------------------------------------------
+
+    eggsMean =
+        0.0;
+
+
+    eggsSD =
+        0.0;
+
+
+    if (fLaid > 0) {
+
+        eggsMean =
+            eggsTotal /
+            fLaid;
+
+
+        ex2 =
+            eggsSq /
+            fLaid;
+
+
+        var =
+            ex2 -
+            (eggsMean * eggsMean);
+
+
+        if (var < 0.0)
+            var = 0.0;
+
+
+        eggsSD =
+            sqrt(var);
+    }
+
+
+    // --------------------------------------------------------
+    // LANDSCAPE SUMMARY
+    // --------------------------------------------------------
+
+    meanSuit =
+        0.0;
+
+
+    meanRelK =
+        0.0;
+
+
+    meanOpt =
+        0.0;
+
+
+    if (adultsNow.size() > 0) {
+
+        posA =
+            adultsNow.spatialPosition;
+
+
+        sA =
+            p1.spatialMapValue(
+                "suit",
+                posA
+            );
+
+
+        kA =
+            p1.spatialMapValue(
+                "relK",
+                posA
+            );
+
+
+        meanSuit =
+            mean(sA);
+
+
+        meanRelK =
+            mean(kA);
+
+
+        meanOpt =
+            mean(
+                sA * kA
+            );
+    }
+
+
+    // --------------------------------------------------------
+    // OUTPUT
+    // --------------------------------------------------------
+
+    catn(
+        sim.cycle + "\t" +
+        p1.individualCount + "\t" +
+        nF + "\t" +
+        nM + "\t" +
+        fLaid + "\t" +
+        eggsTotal + "\t" +
+        eggsMean + "\t" +
+        eggsSD + "\t" +
+        sim.getValue("recruits_created") + "\t" +
+        sim.getValue("recruits_afterCull") + "\t" +
+        K + "\t" +
+        meanSuit + "\t" +
+        meanRelK + "\t" +
+        meanOpt
+    );
+
+
+    if (sim.cycle == Tmax)
+        sim.simulationFinished();
+}

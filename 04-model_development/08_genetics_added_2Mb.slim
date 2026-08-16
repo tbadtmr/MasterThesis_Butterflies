@@ -1,0 +1,1286 @@
+// ============================================================
+// Model development: genomic architecture (2 Mb test window)
+//
+// Development version documenting the stepwise construction of
+// the spatial nonWF model for Cyaniris semiargus.
+//
+// Stage:
+//   Addition of genomic architecture to the final ecological
+//   and spatial model using a reduced 2 Mb chromosome-9 window
+//   for development and testing.
+//
+// Builds on:
+//   07_suit_based_density_dependence.slim
+//
+// Key additions:
+//   - annotated genomic elements from chromosome 9
+//   - neutral and deleterious mutation classes
+//   - gamma-distributed deleterious selection coefficients
+//   - variable dominance coefficients
+//   - mutation and sex-specific recombination
+//   - neutral nucleotide-diversity diagnostics
+//   - FROH and mutation-load diagnostics
+//
+// Note:
+//   This is a reduced genomic development/test model. It uses
+//   a 2 Mb window from chromosome 9 to test the integration of
+//   genetics with the ecological model while reducing
+//   computational cost.
+//
+//   It is not the production burn-in used for the thesis.
+//   Production-scale candidate burn-ins using the full
+//   chromosome are retained in 05-burnin/.
+//
+//   Run from the repository root.
+// ============================================================
+
+
+initialize() {
+
+    // --------------------------------------------------------
+    // MODEL TYPE
+    // --------------------------------------------------------
+
+    initializeSLiMModelType("nonWF");
+
+    initializeSLiMOptions(
+        dimensionality="xy",
+        nucleotideBased=F
+    );
+
+    initializeSex("A");
+
+
+    // --------------------------------------------------------
+    // ECOLOGY
+    //
+    // Parameters follow the ecological formulation that was
+    // subsequently used in the selected production burn-in.
+    // --------------------------------------------------------
+
+    defineConstant("N0", 50000);
+
+    defineConstant("MEAN_EGGS", 100);
+    defineConstant("EGG_MAX", 700);
+
+    defineConstant("S_total", 0.03);
+
+    defineConstant(
+        "FECUN_EFF",
+        MEAN_EGGS * S_total
+    );
+
+    defineConstant(
+        "FEC_DD_STRENGTH",
+        1.0
+    );
+
+
+    // --------------------------------------------------------
+    // SPATIAL SCALE
+    // --------------------------------------------------------
+
+    defineConstant("W", 340.0);
+    defineConstant("H", 277.0);
+
+    defineConstant("SPACE_SIGMA", 0.5);
+
+    defineConstant("DISP_SD", 2.0);
+
+    defineConstant("SI", 0.5);
+    defineConstant("SM", 0.5);
+
+    defineConstant("P_LDD", 0.1);
+    defineConstant("DISP_SD_LDD", 15.0);
+
+    defineConstant("N_CANDIDATES", 5);
+
+    defineConstant(
+        "DISP_BIAS_FLOOR",
+        0.01
+    );
+
+
+    // --------------------------------------------------------
+    // LANDSCAPE
+    // --------------------------------------------------------
+
+    defineConstant(
+        "map_suit_in",
+        "03-model_input/suit_maps/hilda_suitability_1899.txt"
+    );
+
+    defineConstant(
+        "OPT_THRESH",
+        0.01
+    );
+
+
+    // --------------------------------------------------------
+    // DENSITY DEPENDENCE
+    // --------------------------------------------------------
+
+    defineConstant("MAX_SURV", 0.8);
+
+    defineConstant("DENS_MAX", 120.0);
+
+    defineConstant("USABLE_FRAC", 0.8);
+
+    defineConstant("K_EXPONENT", 1.2);
+
+    defineConstant("HAB_FLOOR", 0.01);
+
+
+    // --------------------------------------------------------
+    // GLOBAL SAFETY CAP
+    // --------------------------------------------------------
+
+    defineConstant(
+        "USE_GLOBAL_CAP",
+        T
+    );
+
+    defineConstant(
+        "K_GLOBAL_CAP",
+        120000.0
+    );
+
+
+    // --------------------------------------------------------
+    // DEVELOPMENT TEST LENGTH
+    //
+    // This is deliberately finite. Unlike the production
+    // burn-in, this model is intended to test genomic model
+    // integration rather than reach mutation-drift equilibrium.
+    // --------------------------------------------------------
+
+    defineConstant(
+        "Tmax",
+        1000
+    );
+
+
+    defineConstant(
+        "REPORT_INT",
+        100
+    );
+
+
+    // --------------------------------------------------------
+    // ROH
+    // --------------------------------------------------------
+
+    defineConstant(
+        "ROH_CUTOFF_100KB",
+        100000
+    );
+
+
+    // --------------------------------------------------------
+    // SPATIAL INTERACTIONS
+    //
+    // i1 = competition
+    // i2 = mate choice
+    // --------------------------------------------------------
+
+    initializeInteractionType(
+        1,
+        "xy",
+        reciprocal=T,
+        maxDistance=SI * 3
+    );
+
+    i1.setInteractionFunction(
+        "n",
+        1.0 / (2.0 * PI * SI^2),
+        SI
+    );
+
+
+    initializeInteractionType(
+        2,
+        "xy",
+        reciprocal=T,
+        maxDistance=SM * 3,
+        sexSegregation="FM"
+    );
+
+    i2.setInteractionFunction(
+        "n",
+        1.0,
+        SM
+    );
+
+
+    // ========================================================
+    // GENETIC ARCHITECTURE
+    // ========================================================
+
+    // --------------------------------------------------------
+    // MUTATION AND RECOMBINATION RATES
+    // --------------------------------------------------------
+
+    defineConstant(
+        "MU",
+        2.9e-9
+    );
+
+    defineConstant(
+        "R_M",
+        2.5e-8
+    );
+
+    // Female butterflies are modelled as achiasmate.
+    defineConstant(
+        "R_F",
+        0.0
+    );
+
+
+    // --------------------------------------------------------
+    // REDUCED CHROMOSOME-9 TEST WINDOW
+    //
+    // The coordinate file contains a 2 Mb test region produced
+    // during genomic model development.
+    // --------------------------------------------------------
+
+    defineConstant(
+        "coord_file_in",
+        "03-model_input/testing/coord_chr9_win_mid_2Mb.txt"
+    );
+
+
+    coord_lines =
+        readFile(
+            coord_file_in
+        );
+
+
+    lastRow =
+        strsplit(
+            coord_lines[
+                length(coord_lines) - 1
+            ],
+            "\t"
+        );
+
+
+    defineConstant(
+        "chromLen",
+        asInteger(
+            lastRow[4]
+        ) + 1
+    );
+
+
+    defineConstant(
+        "seqLength",
+        chromLen
+    );
+
+
+    // --------------------------------------------------------
+    // MUTATION TYPES
+    //
+    // m1 = neutral
+    // m2 = deleterious
+    // --------------------------------------------------------
+
+    initializeMutationType(
+        "m1",
+        0.5,
+        "f",
+        0.0
+    );
+
+    m1.convertToSubstitution =
+        T;
+
+
+    initializeMutationType(
+        "m2",
+        0.5,
+        "g",
+        -0.013,
+        0.186
+    );
+
+    m2.convertToSubstitution =
+        F;
+
+
+    // --------------------------------------------------------
+    // DOMINANCE DISTRIBUTION
+    //
+    // Distribution retained from the full genomic model.
+    // --------------------------------------------------------
+
+    delCoef =
+        c(
+            rexp(800, 0.05),
+            rexp(200, 0.4)
+        );
+
+
+    delCoef =
+        delCoef[
+            delCoef <= 0.5
+        ];
+
+
+    defineConstant(
+        "delCoef_distr",
+        delCoef
+    );
+
+
+    // --------------------------------------------------------
+    // GENOMIC ELEMENT TYPES
+    //
+    // Exons and introns:
+    //   60% neutral / 40% deleterious
+    //
+    // Non-coding:
+    //   neutral only
+    // --------------------------------------------------------
+
+    initializeGenomicElementType(
+        "g1",
+        c(m1, m2),
+        c(0.6, 0.4)
+    );
+
+
+    initializeGenomicElementType(
+        "g2",
+        c(m1, m2),
+        c(0.6, 0.4)
+    );
+
+
+    initializeGenomicElementType(
+        "g3",
+        m1,
+        1.0
+    );
+
+
+    // --------------------------------------------------------
+    // DEFINE ANNOTATED GENOMIC ELEMENTS
+    // --------------------------------------------------------
+
+    for (line in coord_lines) {
+
+        fields =
+            strsplit(
+                line,
+                "\t"
+            );
+
+
+        if (fields[0] != "V1") {
+
+            feature =
+                fields[2];
+
+
+            startPos =
+                asInteger(
+                    fields[3]
+                );
+
+
+            endPos =
+                asInteger(
+                    fields[4]
+                );
+
+
+            if (feature == "exon")
+
+                initializeGenomicElement(
+                    g1,
+                    startPos,
+                    endPos
+                );
+
+
+            else if (feature == "intron")
+
+                initializeGenomicElement(
+                    g2,
+                    startPos,
+                    endPos
+                );
+
+
+            else if (feature == "non_coding")
+
+                initializeGenomicElement(
+                    g3,
+                    startPos,
+                    endPos
+                );
+        }
+    }
+
+
+    initializeMutationRate(
+        MU
+    );
+
+
+    initializeRecombinationRate(
+        R_M,
+        sex="M"
+    );
+
+
+    initializeRecombinationRate(
+        R_F,
+        sex="F"
+    );
+}
+
+
+// ============================================================
+// DOMINANCE AND FITNESS EFFECTS
+// ============================================================
+
+mutation(m2) {
+
+    mut.setValue(
+        "dom",
+        sample(
+            asFloat(
+                delCoef_distr
+            ),
+            1
+        )
+    );
+
+
+    return T;
+}
+
+
+mutationEffect(m2) {
+
+    if (homozygous)
+
+        return
+            1.0 +
+            mut.selectionCoeff;
+
+    else
+
+        return
+            1.0 +
+            mut.getValue("dom") *
+            mut.selectionCoeff;
+}
+
+
+// ============================================================
+// INITIALISE LANDSCAPE AND POPULATION
+// ============================================================
+
+1 first() {
+
+    sim.addSubpop(
+        "p1",
+        N0
+    );
+
+
+    p1.setSpatialBounds(
+        c(
+            0.0,
+            0.0,
+            W,
+            H
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // HABITAT-SUITABILITY MAP
+    // --------------------------------------------------------
+
+    Xs =
+        asFloat(
+            readFile(
+                map_suit_in
+            )
+        );
+
+
+    Xs =
+        matrix(
+            Xs,
+            nrow=asInteger(H),
+            ncol=asInteger(W),
+            byrow=T
+        );
+
+
+    p1.defineSpatialMap(
+        "suit",
+        "xy",
+        Xs,
+        interpolate=T,
+        valueRange=c(
+            0.0,
+            1.0
+        ),
+        colors=c(
+            "black",
+            "green"
+        )
+    );
+
+
+    // --------------------------------------------------------
+    // PLACE FOUNDERS IN USABLE HABITAT
+    // --------------------------------------------------------
+
+    for (ind in p1.individuals) {
+
+        pos =
+            p1.pointUniform();
+
+
+        s =
+            p1.spatialMapValue(
+                "suit",
+                pos
+            );
+
+
+        while (s <= OPT_THRESH) {
+
+            pos =
+                p1.pointUniform();
+
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+        }
+
+
+        ind.setSpatialPosition(
+            pos
+        );
+    }
+
+
+    p1.individuals.age =
+        1;
+
+
+    catn(
+        "=== Genomic development test ==="
+    );
+
+    catn(
+        "Genomic window length = " +
+        chromLen +
+        " bp"
+    );
+
+    catn(
+        "Initial population N = " +
+        N0
+    );
+
+    catn(
+        "Test length = " +
+        Tmax +
+        " generations"
+    );
+
+    catn(
+        "gen\tN\tpi_neutral\tFROH_100kb\tm2_count\tmean_m2_freq"
+    );
+}
+
+
+// ============================================================
+// RESET COUNTERS AND INTERACTIONS
+// ============================================================
+
+1:Tmax first() {
+
+    sim.setValue(
+        "recruits_created",
+        0
+    );
+
+
+    i1.evaluate(
+        p1
+    );
+
+
+    i2.evaluate(
+        p1
+    );
+}
+
+
+// ============================================================
+// REPRODUCTION
+// ============================================================
+
+1:Tmax reproduction(p1, "F") {
+
+    if (individual.age < 1)
+        return;
+
+
+    mate =
+        i2.drawByStrength(
+            individual,
+            1
+        );
+
+
+    if (mate.size() == 0)
+        return;
+
+
+    momPos =
+        individual.spatialPosition;
+
+
+    // --------------------------------------------------------
+    // DENSITY-DEPENDENT FECUNDITY
+    // --------------------------------------------------------
+
+    compA =
+        i1.totalOfNeighborStrengths(
+            individual
+        );
+
+
+    suitA_raw =
+        pmax(
+            0.0,
+            p1.spatialMapValue(
+                "suit",
+                momPos
+            )
+        );
+
+
+    suitA =
+        HAB_FLOOR +
+        (1.0 - HAB_FLOOR) *
+        suitA_raw;
+
+
+    KlocA =
+        pmax(
+            1e-9,
+            DENS_MAX *
+            USABLE_FRAC *
+            (suitA_raw^K_EXPONENT)
+        );
+
+
+    RHO_A =
+        FECUN_EFF /
+        (
+            (1.0 + FECUN_EFF) *
+            KlocA
+        );
+
+
+    fecDen =
+        suitA +
+        FEC_DD_STRENGTH *
+        RHO_A *
+        compA +
+        1e-12;
+
+
+    fecScale =
+        pmax(
+            0.0,
+            pmin(
+                1.0,
+                suitA /
+                fecDen
+            )
+        );
+
+
+    meanEggsLocal =
+        MEAN_EGGS *
+        fecScale;
+
+
+    nEggs =
+        rpois(
+            1,
+            meanEggsLocal
+        );
+
+
+    if (nEggs > EGG_MAX)
+        nEggs = EGG_MAX;
+
+
+    if (nEggs <= 0)
+        return;
+
+
+    nRecruit =
+        rbinom(
+            1,
+            nEggs,
+            S_total
+        );
+
+
+    if (nRecruit <= 0)
+        return;
+
+
+    // --------------------------------------------------------
+    // OFFSPRING DISPERSAL
+    // --------------------------------------------------------
+
+    for (i in seqLen(nRecruit)) {
+
+        off =
+            subpop.addCrossed(
+                individual,
+                mate
+            );
+
+
+        off.age =
+            0;
+
+
+        // ----------------------------------------------------
+        // LONG-DISTANCE DISPERSAL
+        // ----------------------------------------------------
+
+        if (runif(1) < P_LDD) {
+
+            tries =
+                0;
+
+
+            x =
+                momPos[0] +
+                rnorm(
+                    1,
+                    0.0,
+                    DISP_SD_LDD
+                );
+
+
+            y =
+                momPos[1] +
+                rnorm(
+                    1,
+                    0.0,
+                    DISP_SD_LDD
+                );
+
+
+            x =
+                max(
+                    0.0,
+                    min(
+                        W,
+                        x
+                    )
+                );
+
+
+            y =
+                max(
+                    0.0,
+                    min(
+                        H,
+                        y
+                    )
+                );
+
+
+            pos =
+                c(
+                    x,
+                    y
+                );
+
+
+            s =
+                p1.spatialMapValue(
+                    "suit",
+                    pos
+                );
+
+
+            while (
+                s <= OPT_THRESH &
+                tries < 10
+            ) {
+
+                x =
+                    momPos[0] +
+                    rnorm(
+                        1,
+                        0.0,
+                        DISP_SD_LDD
+                    );
+
+
+                y =
+                    momPos[1] +
+                    rnorm(
+                        1,
+                        0.0,
+                        DISP_SD_LDD
+                    );
+
+
+                x =
+                    max(
+                        0.0,
+                        min(
+                            W,
+                            x
+                        )
+                    );
+
+
+                y =
+                    max(
+                        0.0,
+                        min(
+                            H,
+                            y
+                        )
+                    );
+
+
+                pos =
+                    c(
+                        x,
+                        y
+                    );
+
+
+                s =
+                    p1.spatialMapValue(
+                        "suit",
+                        pos
+                    );
+
+
+                tries =
+                    tries + 1;
+            }
+
+
+            off.setSpatialPosition(
+                pos
+            );
+
+
+            if (s <= OPT_THRESH)
+
+                off.fitnessScaling =
+                    0.0;
+        }
+
+
+        // ----------------------------------------------------
+        // LOCAL HABITAT-BIASED DISPERSAL
+        // ----------------------------------------------------
+
+        else {
+
+            candX =
+                asFloat(
+                    c()
+                );
+
+            candY =
+                asFloat(
+                    c()
+                );
+
+            candW =
+                asFloat(
+                    c()
+                );
+
+            candS =
+                asFloat(
+                    c()
+                );
+
+
+            for (j in seqLen(N_CANDIDATES)) {
+
+                x =
+                    momPos[0] +
+                    rnorm(
+                        1,
+                        0.0,
+                        DISP_SD
+                    );
+
+
+                y =
+                    momPos[1] +
+                    rnorm(
+                        1,
+                        0.0,
+                        DISP_SD
+                    );
+
+
+                x =
+                    max(
+                        0.0,
+                        min(
+                            W,
+                            x
+                        )
+                    );
+
+
+                y =
+                    max(
+                        0.0,
+                        min(
+                            H,
+                            y
+                        )
+                    );
+
+
+                posJ =
+                    c(
+                        x,
+                        y
+                    );
+
+
+                sJ =
+                    p1.spatialMapValue(
+                        "suit",
+                        posJ
+                    );
+
+
+                candX =
+                    c(
+                        candX,
+                        x
+                    );
+
+
+                candY =
+                    c(
+                        candY,
+                        y
+                    );
+
+
+                candW =
+                    c(
+                        candW,
+                        pmax(
+                            DISP_BIAS_FLOOR,
+                            sJ
+                        )
+                    );
+
+
+                candS =
+                    c(
+                        candS,
+                        sJ
+                    );
+            }
+
+
+            chosen =
+                sample(
+                    0:(size(candW) - 1),
+                    1,
+                    weights=candW
+                );
+
+
+            pos =
+                c(
+                    candX[chosen],
+                    candY[chosen]
+                );
+
+
+            s =
+                candS[chosen];
+
+
+            off.setSpatialPosition(
+                pos
+            );
+
+
+            if (s <= OPT_THRESH)
+
+                off.fitnessScaling =
+                    0.0;
+        }
+    }
+
+
+    sim.setValue(
+        "recruits_created",
+        sim.getValue("recruits_created") +
+        nRecruit
+    );
+}
+
+
+// ============================================================
+// DENSITY-DEPENDENT RECRUIT SURVIVAL
+// ============================================================
+
+1:Tmax early() {
+
+    inds =
+        p1.individuals;
+
+
+    adults =
+        inds[
+            inds.age >= 1
+        ];
+
+
+    recruits =
+        inds[
+            inds.age == 0
+        ];
+
+
+    i1.evaluate(
+        p1
+    );
+
+
+    if (recruits.size() > 0) {
+
+        comp =
+            i1.totalOfNeighborStrengths(
+                recruits
+            );
+
+
+        posR =
+            recruits.spatialPosition;
+
+
+        suitRaw =
+            pmax(
+                0.0,
+                p1.spatialMapValue(
+                    "suit",
+                    posR
+                )
+            );
+
+
+        suitR =
+            HAB_FLOOR +
+            (1.0 - HAB_FLOOR) *
+            suitRaw;
+
+
+        Kloc =
+            pmax(
+                1e-9,
+                DENS_MAX *
+                USABLE_FRAC *
+                (suitRaw^K_EXPONENT)
+            );
+
+
+        RHO =
+            FECUN_EFF /
+            (
+                (1.0 + FECUN_EFF) *
+                Kloc
+            );
+
+
+        den =
+            suitR +
+            RHO *
+            comp +
+            1e-12;
+
+
+        dd =
+            pmax(
+                0.0,
+                pmin(
+                    MAX_SURV,
+                    suitR /
+                    den
+                )
+            );
+
+
+        recruits.fitnessScaling =
+            recruits.fitnessScaling *
+            dd;
+
+
+        // ----------------------------------------------------
+        // GLOBAL SAFETY CAP
+        // ----------------------------------------------------
+
+        expNextN =
+            sum(
+                recruits.fitnessScaling
+            );
+
+
+        globalScale =
+            1.0;
+
+
+        if (
+            USE_GLOBAL_CAP &
+            expNextN > K_GLOBAL_CAP
+        )
+
+            globalScale =
+                K_GLOBAL_CAP /
+                expNextN;
+
+
+        recruits.fitnessScaling =
+            recruits.fitnessScaling *
+            globalScale;
+    }
+
+
+    // Non-overlapping generations.
+    if (adults.size() > 0)
+
+        adults.fitnessScaling =
+            0.0;
+}
+
+
+// ============================================================
+// GENETIC DIAGNOSTICS
+// ============================================================
+
+1:Tmax late() {
+
+    if (
+        sim.cycle % REPORT_INT == 0 |
+        sim.cycle == Tmax
+    ) {
+
+        // ----------------------------------------------------
+        // NEUTRAL NUCLEOTIDE DIVERSITY
+        // ----------------------------------------------------
+
+        muts_m1 =
+            unique(
+                p1.haplosomes.mutationsOfType(
+                    m1
+                )
+            );
+
+
+        pi =
+            calcHeterozygosity(
+                p1.haplosomes,
+                muts_m1
+            );
+
+
+        // ----------------------------------------------------
+        // FROH
+        // ----------------------------------------------------
+
+        froh =
+            0.0;
+
+
+        if (p1.individualCount > 0)
+
+            froh =
+                calcMeanFroh(
+                    p1.individuals,
+                    ROH_CUTOFF_100KB
+                );
+
+
+        // ----------------------------------------------------
+        // DELETERIOUS MUTATION SUMMARY
+        // ----------------------------------------------------
+
+        m2muts =
+            unique(
+                p1.haplosomes.mutationsOfType(
+                    m2
+                )
+            );
+
+
+        meanM2Freq =
+            0.0;
+
+
+        if (size(m2muts) > 0)
+
+            meanM2Freq =
+                mean(
+                    sim.mutationFrequencies(
+                        p1,
+                        m2muts
+                    )
+                );
+
+
+        catn(
+            sim.cycle + "\t" +
+            p1.individualCount + "\t" +
+            pi + "\t" +
+            froh + "\t" +
+            size(m2muts) + "\t" +
+            meanM2Freq
+        );
+    }
+
+
+    if (sim.cycle == Tmax) {
+
+        catn(
+            "=== 2 Mb genomic development test complete ==="
+        );
+
+
+        sim.simulationFinished();
+    }
+}
