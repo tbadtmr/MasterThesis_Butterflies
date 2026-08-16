@@ -220,10 +220,10 @@ After filtering and spatial thinning, 339 terrestrial GBIF occurrence records re
 
 ### Generating landscape suitability maps
 
-HILDA+ land-cover classes are reclassified into habitat suitability values for _C. semiargus_ and written as annual maps for 1899–2019. Suitability ranges from 0 (unsuitable) to 1 (primary breeding habitat):
+HILDA+ land-cover classes are reclassified into relative habitat-suitability values for *C. semiargus* and converted into annual simulation landscapes for 1899–2019.
 
 | HILDA+ class | Code | Suitability |
-|---|---|---|
+|---|---:|---:|
 | Pasture / rangeland | 33 | 1.0 |
 | Unmanaged grass / shrubland | 55 | 1.0 |
 | Cropland | 22 | 0.5 |
@@ -231,27 +231,58 @@ HILDA+ land-cover classes are reclassified into habitat suitability values for _
 | Urban | 11 | 0.1 |
 | Ocean / no data, sparse / no vegetation, water | 0, 66, 77 | 0.0 |
 
-Since there is no semi-natural grassland class available, classes 33 and 55 are both treated as primary breeding habitat. Rasters are reprojected onto hilda_final_clip_20km_south.tif (340 × 277 cells, ~1110 × 1105 m, cell area 1.23 km²) and masked to Sweden; cells outside the mask become 0.
+Because HILDA+ does not contain a separate semi-natural grassland class, pasture/rangeland and unmanaged grass/shrubland are both treated as the highest-suitability grassland habitat.
+
+The annual HILDA+ state rasters were first reprojected to WGS84 using nearest-neighbour resampling. These preprocessed rasters are stored locally in:
+
+`01-data/HILDA/preprocessed_wgs84/`
+
+They are not included in the repository because of file size. The final suitability maps are projected onto the simulation template `hilda_final_clip_20km_south.tif`, which defines the 340 × 277 cell landscape (~1110 × 1105 m per cell; ~1.23 km²), and are masked to Sweden. Cells outside Sweden or without suitable land cover are assigned suitability 0.
 
 ```sh
-Rscript 00-scripts/R-make_suitability_maps.R
-````
-Outputs, per year, to `03-model_input/suit_maps/`:
-- `hilda_suitability_<year>.tif` — suitability raster
-- `hilda_suitability_<year>.txt` — flat row-major values, read directly by the SLiM model
-- `hilda_suitability_<year>_dims.txt` — grid geometry
-
-and to summaries/:
-- `class_areas_by_year.tsv` — cells and km² per land-cover class per year
-- `suitability_value_counts.tsv` — cells and km² per suitability value per year
-
-**Habitat change through time**
-Summarises the maps into the habitat-loss figure and the numbers quoted in the results.
-
-```sh
-Rscript 00-scripts/R-habitat_change_summary.R
+Rscript 00-scripts/03f_make_suitability_maps.R
 ```
-Reads `summaries/class_areas_by_year.tsv`. Outputs to `plots/` as .png, .pdf and .svg: (A) weighted suitable habitat area and (B) grassland area split into pasture / rangeland and unmanaged grass / shrubland. Also prints the 1899 and 2019 values, the percentage changes, the year of minimum grassland area, and forest's share of the weighted total.
+
+Outputs for each year are written to:
+
+`03-model_input/suit_maps/`
+
+- `hilda_suitability_<year>.tif` — suitability raster
+- `hilda_suitability_<year>.txt` — flat row-major suitability values read directly by the SLiM model
+- `hilda_suitability_<year>_dims.txt` — grid dimensions and spatial extent
+
+Landscape summaries are written to:
+
+`02-landscapes/derived/`
+
+- `class_areas_by_year.tsv` — number of cells and area (km²) per HILDA+ class and year
+- `suitability_value_counts.tsv` — number of cells and area (km²) per suitability value and year
+
+The regenerated suitability maps were checked against the maps used in the original simulations and matched cell-for-cell for tested historical and contemporary years.
+
+#### Habitat change through time
+
+Historical changes in habitat availability are summarized from `class_areas_by_year.tsv`.
+
+```sh
+Rscript 00-scripts/03g_habitat_change_summary.R
+```
+
+The script calculates weighted suitable habitat area, total grassland area and the individual trajectories of pasture/rangeland and unmanaged grass/shrubland.
+
+Outputs:
+
+`02-landscapes/figures/`
+- `FIG_5_habitat_change_1899_2019.png`
+- `FIG_5_habitat_change_1899_2019.pdf`
+- `FIG_5_habitat_change_1899_2019.svg`
+
+`02-landscapes/tables/`
+- `TABLE_S5_land_cover_change.tsv`
+- `TABLE_S5_land_cover_change_numeric.tsv`
+- `habitat_change_summary.tsv`
+
+Across the study period, weighted suitable habitat declined from approximately 20,830 to 18,710 weighted km², while total grassland declined from approximately 2,950 to 785 km².
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
