@@ -218,7 +218,7 @@ Outputs:
 After filtering and spatial thinning, 339 terrestrial GBIF occurrence records remained within the simulation study region. Grassland was the only habitat class consistently overrepresented relative to both landscape availability and the distribution of SeBMS monitoring sites. Together with the monitoring analyses and published ecological information, these results were used to inform the habitat-suitability values assigned in the simulation model.
 
 
-### Generating landscape suitability maps
+## 3. Generating landscape suitability maps
 
 HILDA+ land-cover classes are reclassified into relative habitat-suitability values for *C. semiargus* and converted into annual simulation landscapes for 1899–2019.
 
@@ -283,6 +283,46 @@ Outputs:
 - `habitat_change_summary.tsv`
 
 Across the study period, weighted suitable habitat declined from approximately 20,830 to 18,710 weighted km², while total grassland declined from approximately 2,950 to 785 km².
+
+## 4. Model development
+
+This directory documents the main stages in the development of the spatially
+explicit non-Wright-Fisher model for *Cyaniris semiargus*.
+
+The scripts are retained as model-development provenance rather than as the
+production workflow used to generate the final thesis results. Intermediate
+debugging and parameter-testing versions that did not introduce a substantial
+new model component have been omitted.
+
+| Stage | Script | Main development |
+|------:|--------|------------------|
+| 1 | `01_basic_ecology_WF.slim` | Initial annual demographic proof-of-concept using a Wright-Fisher model |
+| 2 | `02_basic_nonWF_spatial.slim` | Individual-based nonWF life cycle with explicit reproduction, continuous space and dispersal |
+| 3 | `03_habitat_map.slim` | Habitat-suitability raster, habitat-restricted founder placement and offspring settlement |
+| 4 | `04_suitability_relK_proxy.slim` | Monitoring-derived relative-capacity layer combined with habitat suitability |
+| 5 | `05_local_density_dependence.slim` | Local competition, density-dependent recruit survival, spatial mate choice and rare long-distance dispersal |
+| 6 | `06_local_carrying_capacity.slim` | Explicit local carrying capacity derived from the relative-capacity landscape |
+| 7 | `07_suit_based_density_dependence.slim` | Simplified suitability-only carrying capacity and suitability-based density dependence |
+| 8 | `08_genetics_added_2Mb.slim` | Addition of chromosome-based genetic architecture using a reduced 2 Mb chromosome-9 test region |
+
+## Transition to the production model
+
+The first seven stages focus on development of the ecological and spatial
+framework. Stage 8 introduces the genomic component using a reduced 2 Mb
+window of chromosome 9 to test the integration of genetic and ecological
+processes while keeping computational requirements manageable.
+
+The genomic model includes neutral and deleterious mutations, annotated
+genomic element types, mutation and sex-specific recombination, variable
+dominance effects and genetic summary statistics.
+
+After these development stages, the model was expanded to the full chromosome
+9 and several production-scale burn-in parameterisations were run. These are
+documented in [`../05-burnin/`](../05-burnin/).
+
+The burn-in parameterisation that reached the predefined nucleotide-diversity
+convergence criterion was subsequently used to initialise the historical and
+future simulations in [`../06-simulation/`](../06-simulation/).
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
