@@ -104,7 +104,24 @@ presence/absence site analysis
 density analysis
 forest / buffer / edge analysis
 
-GBIF
+
+### GBIF occurrence data
+
+Occurrence records for *Cyaniris semiargus* were downloaded from GBIF and used
+to evaluate habitat associations independently of the monitoring data.
+
+**Download:** GBIF.org (17 March 2026), GBIF Occurrence Download  
+**DOI:** https://doi.org/10.15468/dl.9kxv2n  
+**Download key:** 0043200-260226173443078  
+**Records:** 11,962
+
+The download was restricted to human observations from Sweden with coordinates,
+no reported geospatial issues, present occurrence status, coordinate uncertainty
+≤1000 m and records from 2000–2026.
+
+Place the downloaded Darwin Core Archive contents in:
+
+`01-data/gbif/`
 
 
 ### Generating landscape suitability maps
