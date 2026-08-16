@@ -2,20 +2,17 @@
 set -euo pipefail
 
 # ============================================================
-# Per-chromosome QC table for Cyaniris semiargus reference genome
+# Per-chromosome QC summary for the C. semiargus reference genome
 #
-# Input:
+# Inputs:
 #   01-data/ncbi_dataset/data/GCA_905187585.1/
 #   GCA_905187585.1_ilCyaSemi1.1_genomic.fna
 #
-# Output:
+# Outputs:
 #   summaries/per_chr_qc.tsv
 #
-# Notes:
-# - QC values are calculated directly from the FASTA.
-# - Chromosome labels are assigned using the accession names
-#   of assembly GCA_905187585.1 / ilCyaSemi1.1.
-# - MT and small unplaced scaffolds are excluded from this table.
+# Usage:
+#   ./00-scripts/01_qc_summary_table.sh
 # ============================================================
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Make continuous exon/intron/non-coding coordination file for chromosome 9.
-# Output coordinates are 1-based inclusive.
+# ============================================================
+# Generate exon/intron/non-coding coordinates for chromosome 9
+#
+# Inputs:
+#   01-data/ncbi_dataset/data/GCA_905187585.1/
+#   GCA_905187585.1_ilCyaSemi1.1_genomic.fna
+#   genes.gff3
+#
+# Outputs:
+#   03-model_input/coord_chr9.gff3
+#   03-model_input/coord_chr9.txt
+#   03-model_input/testing/coord_chr9_win_mid_200kb.txt
+#   03-model_input/testing/coord_chr9_win_mid_2Mb.txt
+#
+# Usage:
+#   ./00-scripts/02_make_coord_file.sh
+#
+# Note:
+#   Final coordinates are 1-based inclusive.
+# ============================================================
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
