@@ -97,31 +97,125 @@ https://doi.org/10.2909/960998c1-1870-4e82-8051-6485205ebbac
 Extract the downloaded raster files to:
 `01-data/CORINE/`
 
-### Analysis of monitoring and occurrences sites
+### Analysis of monitoring and occurrence sites
 
-MONITORING SCHEME
-presence/absence site analysis
-density analysis
-forest / buffer / edge analysis
+Habitat associations of *Cyaniris semiargus* were evaluated using data from the Swedish Butterfly Monitoring Scheme (SeBMS), CORINE Land Cover 2018 and GBIF occurrence records. These analyses were used to inform the relative habitat-suitability values later assigned to the HILDA+ land-cover classes.
 
+The monitoring input files are located in:
+
+`01-data/monitoring/`
+
+The analyses are run sequentially using scripts `03a`–`03e`.
+
+#### Monitoring-site habitat extraction
+
+CORINE 2018 and HILDA+ 2019 habitat classes were extracted at SeBMS monitoring sites. CORINE landscape composition was additionally calculated within 0.5, 1, 2, 5 and 10 km buffers around each site.
+
+```sh
+Rscript 00-scripts/03a_extract_monitoring_landscape.R
+```
+
+Inputs:
+- `01-data/monitoring/presence_absence_master.tsv`
+- `01-data/monitoring/corine_index_to_clc.tsv`
+- CORINE Land Cover 2018 raster
+- HILDA+ 2019 state raster
+
+Outputs:
+- `02-landscapes/derived/sites_with_classes.tsv`
+- `02-landscapes/derived/site_buffer_composition_long.tsv`
+
+The analysis includes 1,429 monitoring sites, of which 646 fall within the simulation study region. The CORINE classes extracted directly from the raster showed 100% agreement with the existing site classifications.
+
+#### Habitat associations at monitoring sites
+
+Recorded presence was compared among broad CORINE habitat classes. Pasture/rangeland and unmanaged grass/shrubland were pooled into a single Grassland category for statistical analyses, while Cropland, Forest, Urban and Other were retained as separate classes. Logistic regression models additionally included northing to account for the geographic distribution of the species.
+
+```sh
+Rscript 00-scripts/03b_monitoring_analysis.R
+```
+
+Outputs:
+- `02-landscapes/tables/TABLE_S1_habitat_occurrence.tsv`
+- `02-landscapes/tables/TABLE_S2_logistic_regression.tsv`
+- `02-landscapes/figures/FIG_S1_habitat_association.*`
+- `02-landscapes/figures/FIG_S2_CORINE_HILDA_correspondence.*`
+
+This analysis provides the monitoring-site habitat associations and the comparison between the fine-scale CORINE and coarser HILDA+ classifications used in the thesis.
+
+#### Surrounding landscape composition
+
+To test whether recorded presence was related to the landscape surrounding monitoring sites, CORINE habitat proportions were calculated relative to terrestrial area within each buffer. Buffers containing less than 50% terrestrial area were excluded.
+
+The primary analysis used a 2 km radius, with additional analyses at 0.5, 1, 5 and 10 km to assess sensitivity to spatial scale.
+
+```sh
+Rscript 00-scripts/03c_monitoring_buffer_analysis.R
+```
+
+Outputs:
+- `02-landscapes/derived/site_buffer_composition_wide.tsv`
+- `02-landscapes/tables/TABLE_S3_landscape_composition_2km.tsv`
+- `02-landscapes/tables/grassland_association_by_radius.tsv`
+- `02-landscapes/figures/grassland_association_by_radius.*`
+
+The final 2 km analysis contained 628 monitoring sites within the study region. The positive association with grassland cover was retained across all tested buffer radii from 0.5 to 10 km.
+
+#### Monitoring-based abundance estimates
+
+SeBMS transect, transect-segment and point-count data were summarized to evaluate the plausible order of magnitude of local adult abundance used during demographic model calibration.
+
+Transect counts were standardized using the 5 m wide Pollard-walk survey belt. Point counts conducted within a 25 m radius were converted to an equivalent survey area, allowing all three survey types to be expressed as area-standardized observed adults per km².
+
+```sh
+Rscript 00-scripts/03d_density_summary.R
+```
+
+Outputs:
+- `02-landscapes/derived/density_records_standardized.tsv`
+- `02-landscapes/tables/density_summary_by_method.tsv`
+- `02-landscapes/tables/density_summary_by_habitat.tsv`
+- `02-landscapes/figures/density_by_habitat.*`
+
+These values are based only on records in which *C. semiargus* was observed and are not corrected for imperfect detection. They are therefore used to assess the plausible order of magnitude of local abundance rather than as estimates of absolute population density.
 
 ### GBIF occurrence data
 
-Occurrence records for *Cyaniris semiargus* were downloaded from GBIF and used
-to evaluate habitat associations independently of the monitoring data.
+Occurrence records for *Cyaniris semiargus* were downloaded from GBIF and used as an independent assessment of habitat associations.
 
 **Download:** GBIF.org (17 March 2026), GBIF Occurrence Download  
 **DOI:** https://doi.org/10.15468/dl.9kxv2n  
 **Download key:** 0043200-260226173443078  
 **Records:** 11,962
 
-The download was restricted to human observations from Sweden with coordinates,
-no reported geospatial issues, present occurrence status, coordinate uncertainty
-≤1000 m and records from 2000–2026.
+The original GBIF download contained human observations from Sweden with coordinates, present occurrence status, no reported geospatial issues, coordinate uncertainty up to 1,060 m and records from 2000–2026.
 
 Place the downloaded Darwin Core Archive contents in:
 
 `01-data/gbif/`
+
+For the analysis, records were further restricted to:
+- coordinate uncertainty ≤1,000 m
+- years 2000–2025
+- the May–August flight period
+- unique combinations of coordinates and observation date
+
+To reduce repeated sampling of frequently visited locations, occurrence records were spatially thinned to a maximum of one record per 1 km grid cell.
+
+Habitat use was compared with:
+1. exact habitat availability across all terrestrial CORINE cells within the simulation study region; and
+2. the distribution of habitat classes among SeBMS monitoring sites, providing a second comparison that partially accounts for observer accessibility.
+
+```sh
+Rscript 00-scripts/03e_gbif_habitat_analysis.R
+```
+
+Outputs:
+- `02-landscapes/tables/TABLE_S4_gbif_habitat_selection.tsv`
+- `02-landscapes/tables/TABLE_S4_gbif_habitat_selection_numeric.tsv`
+- `02-landscapes/tables/gbif_record_filtering.tsv`
+
+After filtering and spatial thinning, 339 terrestrial GBIF occurrence records remained within the simulation study region. Grassland was the only habitat class consistently overrepresented relative to both landscape availability and the distribution of SeBMS monitoring sites. Together with the monitoring analyses and published ecological information, these results were used to inform the habitat-suitability values assigned in the simulation model.
 
 
 ### Generating landscape suitability maps
