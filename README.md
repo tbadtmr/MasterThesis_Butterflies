@@ -7,7 +7,7 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 - `02-landscapes/` landscape analyses and processed tables
 - `03-model_input/` all processed files need for the Simulation
 - `04-model_development/` SLiM model develoment steps and script versions
-- `05-burnin/` final burnin script and simulation output
+- `05-burnin/` final burn-in candidates and selected ancestral burn-in model
 - `06-simulation/` simulation scripts and output (historical and future simulation)
 - `07-analysis/` comparison of model outputs to empirical data and downstream analysis
 - `logs`
@@ -305,7 +305,7 @@ new model component have been omitted.
 | 7 | `07_suit_based_density_dependence.slim` | Simplified suitability-only carrying capacity and suitability-based density dependence |
 | 8 | `08_genetics_added_2Mb.slim` | Addition of chromosome-based genetic architecture using a reduced 2 Mb chromosome-9 test region |
 
-## Transition to the production model
+### Transition to the production model
 
 The first seven stages focus on development of the ecological and spatial
 framework. Stage 8 introduces the genomic component using a reduced 2 Mb
@@ -318,11 +318,50 @@ dominance effects and genetic summary statistics.
 
 After these development stages, the model was expanded to the full chromosome
 9 and several production-scale burn-in parameterisations were run. These are
-documented in [`../05-burnin/`](../05-burnin/).
+documented in [`05-burnin/`](05-burnin/).
 
 The burn-in parameterisation that reached the predefined nucleotide-diversity
 convergence criterion was subsequently used to initialise the historical and
-future simulations in [`../06-simulation/`](../06-simulation/).
+future simulations in [`06-simulation/`](06-simulation/).
+
+## 5. Burn-in simulations
+
+The full chromosome 9 model was run under the constant 1899 landscape to generate
+an ancestral population for the historical simulations. Four long burn-in
+parameterisations were explored during final model calibration.
+
+| Version | Main differences | Use |
+|---|---|---|
+| `01_burnin2_selected` | Intermediate dispersal and density scaling (`DISP_SD = 2`, `DENS_MAX = 120`) | **Selected final burn-in** |
+| `02_burnin1_narrow_dispersal` | Narrower local dispersal and higher density scaling (`DISP_SD = 1`, `DENS_MAX = 150`) | Alternative |
+| `03_burnin4_broad_dispersal` | Broader dispersal and lower density scaling (`DISP_SD = 4`, `DENS_MAX = 100`) | Alternative |
+| `04_burnin_dens_low_capacity` | Broad dispersal with the lowest density scaling (`DISP_SD = 4`, `DENS_MAX = 80`) | Alternative |
+
+The parameterisations were explored iteratively rather than as a full factorial
+parameter search. The first candidate to reach the predefined nucleotide-diversity
+convergence criterion while maintaining stable, biologically plausible demographic
+behaviour was `01_burnin2_selected`. Neutral diversity converged at generation
+115,000, and the final burn-in state was written at generation 117,000. This state
+was used to initialise all downstream historical simulations.
+
+The alternative scripts represent additional long burn-in parameterisations that were initiated during model calibration but could not be completed within the timeframe of the thesis. They are retained as starting points for future simulation runs.
+
+### Running a burn-in
+
+Scripts use repository-relative paths and should be run from the repository root.
+For example, the selected burn-in can be started in the background with:
+
+```sh
+nohup slim 05-burnin/01_burnin2_selected/burnin2_selected.slim \
+  > 05-burnin/01_burnin2_selected/output/burnin2_selected.log 2>&1 &
+
+# Progress can be followed with:
+tail -f 05-burnin/01_burnin2_selected/output/burnin2_selected.log
+```
+
+
+
+
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
