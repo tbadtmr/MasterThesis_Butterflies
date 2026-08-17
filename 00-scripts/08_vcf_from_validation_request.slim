@@ -1,0 +1,165 @@
+initialize() {
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(dimensionality="xy", nucleotideBased=F);
+    initializeSex("A");
+
+    // ------------------------------------------------------------
+    // GENOME INIT — match original chr9 simulations
+    // ------------------------------------------------------------
+
+    defineConstant("MU",  2.9e-9);
+    defineConstant("R_M", 2.5e-8);
+    defineConstant("R_F", 0.0);
+
+    coord_lines = readFile(COORD_FILE);
+    lastRow = strsplit(coord_lines[length(coord_lines) - 1], "\t");
+
+    defineConstant("chromLen", asInteger(lastRow[4]) + 1);
+    defineConstant("seqLength", chromLen);
+
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    m1.convertToSubstitution = T;
+
+    initializeMutationType("m2", 0.5, "g", -0.013, 0.186);
+    m2.convertToSubstitution = F;
+
+    delCoef = c(rexp(800, 0.05), rexp(200, 0.4));
+    delCoef = delCoef[delCoef <= 0.5];
+    defineConstant("delCoef_distr", delCoef);
+
+    initializeGenomicElementType("g1", c(m1, m2), c(0.6, 0.4));
+    initializeGenomicElementType("g2", c(m1, m2), c(0.6, 0.4));
+    initializeGenomicElementType("g3", m1, 1.0);
+
+    for (line in coord_lines) {
+        fields = strsplit(line, "\t");
+
+        if (fields[0] != "V1") {
+            feature  = fields[2];
+            startPos = asInteger(fields[3]);
+            endPos   = asInteger(fields[4]);
+
+            if (feature == "exon")
+                initializeGenomicElement(g1, startPos, endPos);
+            else if (feature == "intron")
+                initializeGenomicElement(g2, startPos, endPos);
+            else if (feature == "non_coding")
+                initializeGenomicElement(g3, startPos, endPos);
+        }
+    }
+
+    initializeMutationRate(MU);
+    initializeRecombinationRate(R_M, sex="M");
+    initializeRecombinationRate(R_F, sex="F");
+}
+
+mutation(m2) {
+    mut.setValue("dom", sample(asFloat(delCoef_distr), 1));
+    return T;
+}
+
+mutationEffect(m2) {
+    if (homozygous)
+        return 1.0 + mut.selectionCoeff;
+    else
+        return 1.0 + mut.getValue("dom") * mut.selectionCoeff;
+}
+
+1 late() {
+
+    sim.readFromPopulationFile(SNAPSHOT);
+
+    catn("Loaded snapshot: " + SNAPSHOT);
+    catn("N individuals: " + p1.individualCount);
+    catn("Total mutations: " + size(sim.mutations));
+    catn("m1 mutations: " + size(sim.mutationsOfType(m1)));
+    catn("m2 mutations: " + size(sim.mutationsOfType(m2)));
+
+    // ------------------------------------------------------------
+    // Read validation request TSV
+    // ------------------------------------------------------------
+
+    lines = readFile(REQUEST_TSV);
+    header = strsplit(lines[0], "\t");
+
+    i_index = which(header == "ind_index");
+
+    if (size(i_index) == 0)
+        stop("Column ind_index not found in REQUEST_TSV.");
+
+    ids = integer(0);
+
+    for (line in lines[1:(size(lines)-1)]) {
+
+        if (line == "")
+            next;
+
+        cols = strsplit(line, "\t");
+        ids = c(ids, asInteger(cols[i_index]));
+    }
+
+    ids = unique(ids);
+
+    if (size(ids) == 0)
+        stop("No individual indices found in " + REQUEST_TSV);
+
+    inds_all = p1.individuals;
+
+    if (min(ids) < 0)
+        stop("Some selected indices are negative.");
+
+    if (max(ids) >= size(inds_all)) {
+        stop(
+            "Selected ind_index exceeds population size. " +
+            "N = " + size(inds_all) +
+            "; max ind_index = " + max(ids)
+        );
+    }
+
+    // ind_index is confirmed 0-based and reproducible after reload.
+    sel = inds_all[ids];
+
+    catn("Requested unique individuals: " + size(ids));
+    catn("Selected individuals: " + size(sel));
+
+    // ------------------------------------------------------------
+    // Write VCF
+    // ------------------------------------------------------------
+
+    sel.outputIndividualsToVCF(
+        filePath = OUT_VCF,
+        append = F,
+        outputMultiallelics = F
+    );
+
+    // ------------------------------------------------------------
+    // Also save selection order for downstream mapping/QC
+    // ------------------------------------------------------------
+
+    writeFile(
+        OUT_MAP,
+        "vcf_order\tind_index\tsex\tage\tx\ty",
+        append = F
+    );
+
+    for (j in 0:(size(sel)-1)) {
+
+        ind = sel[j];
+
+        writeFile(
+            OUT_MAP,
+            (j + 1) + "\t" +
+            ids[j] + "\t" +
+            ind.sex + "\t" +
+            ind.age + "\t" +
+            ind.x + "\t" +
+            ind.y,
+            append = T
+        );
+    }
+
+    catn("Wrote VCF: " + OUT_VCF);
+    catn("Wrote map: " + OUT_MAP);
+
+    sim.simulationFinished();
+}

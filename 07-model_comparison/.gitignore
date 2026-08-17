@@ -1,0 +1,20 @@
+# Large/intermediate model-validation files are not tracked.
+positions/
+sampling/
+genotype_requests/
+validation_genotypes/
+logs/
+
+# Raw or per-draw outputs
+results/**/per_snapshot/
+results/**/per_modelrep/
+results/**/raw/
+results/**/*all_draws*
+results/validation_sampling_manifest.tsv
+results/validation_sampling_draw_summary.tsv
+
+*.out
+*.err
+*.vcf
+*.vcf.gz
+*.bcf

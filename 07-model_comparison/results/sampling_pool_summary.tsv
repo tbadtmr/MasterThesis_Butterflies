@@ -1,0 +1,40 @@
+landscape	model	target	target_region	locality	empirical_year	simulation_year	required	reps_checked	complete_5_reps	min_available	median_available	max_available	reps_enough	all_checked_enough	all_5_reps_enough	max_nearest_distance
+full	Kexp1p3_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	140	154	185	5	TRUE	TRUE	0.483659605810588
+full	Kexp1p3_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	78	92	96	5	TRUE	TRUE	0.628885254663022
+full	Kexp1p3_D120	NSmaland_hist_1900proxy	NSmaland	Hjelmseryd	1936	1900	3	5	TRUE	0	1	1	0	FALSE	FALSE	10.3978256348927
+full	Kexp1p3_D120	NSmaland_hist_1951proxy	NSmaland	Hjelmseryd	1936	1951	3	5	TRUE	0	0	0	0	FALSE	FALSE	35.5584456080088
+full	Kexp1p3_D120	NSmaland_mod	NSmaland	Götafors	2021	2020	6	5	TRUE	0	0	0	0	FALSE	FALSE	58.1972465420314
+full	Kexp1p3_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	47	60	87	5	TRUE	TRUE	0.750058313657986
+full	Kexp1p3_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	150	196	208	5	TRUE	TRUE	0.278992143906579
+full	Kexp1p3_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	130	144	159	5	TRUE	TRUE	0.457999297548819
+no_oland	Kexp1p2_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	161	191	204	5	TRUE	TRUE	0.29858447247029
+no_oland	Kexp1p2_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	106	108	123	5	TRUE	TRUE	0.442242922114038
+no_oland	Kexp1p2_D120	NSmaland_hist_1900proxy	NSmaland	Hjelmseryd	1936	1900	3	5	TRUE	2	4	6	4	FALSE	FALSE	2.5903960430866
+no_oland	Kexp1p2_D120	NSmaland_hist_1951proxy	NSmaland	Hjelmseryd	1936	1951	3	5	TRUE	0	1	3	1	FALSE	FALSE	4.20526365540587
+no_oland	Kexp1p2_D120	NSmaland_mod	NSmaland	Götafors	2021	2020	6	5	TRUE	0	0	0	0	FALSE	FALSE	43.6072246145004
+no_oland	Kexp1p2_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	65	84	86	5	TRUE	TRUE	0.605509296779414
+no_oland	Kexp1p2_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	191	218	247	5	TRUE	TRUE	0.364460372383454
+no_oland	Kexp1p2_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	126	142	162	5	TRUE	TRUE	0.33655635536919
+no_oland	Kexp1p3_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	125	160	179	5	TRUE	TRUE	0.3275159239722
+no_oland	Kexp1p3_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	83	98	118	5	TRUE	TRUE	0.442354585309647
+no_oland	Kexp1p3_D120	NSmaland_hist_1900proxy	NSmaland	Hjelmseryd	1936	1900	3	5	TRUE	0	1	1	0	FALSE	FALSE	8.56265880937188
+no_oland	Kexp1p3_D120	NSmaland_hist_1951proxy	NSmaland	Hjelmseryd	1936	1951	3	5	TRUE	0	0	1	0	FALSE	FALSE	18.6476599099409
+no_oland	Kexp1p3_D120	NSmaland_mod	NSmaland	Götafors	2021	2020	6	5	TRUE	0	0	0	0	FALSE	FALSE	59.7863482500741
+no_oland	Kexp1p3_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	63	84	96	5	TRUE	TRUE	0.919805896222763
+no_oland	Kexp1p3_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	155	202	215	5	TRUE	TRUE	0.255292565801117
+no_oland	Kexp1p3_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	128	132	160	5	TRUE	TRUE	0.637738741320589
+skane_only	Kexp1p2_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	151	178	190	5	TRUE	TRUE	0.505532114170514
+skane_only	Kexp1p2_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	98	112	131	5	TRUE	TRUE	0.467091138436195
+skane_only	Kexp1p2_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	63	75	96	5	TRUE	TRUE	0.446591685297848
+skane_only	Kexp1p2_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	187	217	231	5	TRUE	TRUE	0.433493061791013
+skane_only	Kexp1p2_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	152	154	169	5	TRUE	TRUE	0.413429108251764
+skane_only	Kexp1p3_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	140	162	175	5	TRUE	TRUE	0.420431692867076
+skane_only	Kexp1p3_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	66	101	105	5	TRUE	TRUE	0.401232172714571
+skane_only	Kexp1p3_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	60	77	84	5	TRUE	TRUE	0.542235714767879
+skane_only	Kexp1p3_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	180	190	232	5	TRUE	TRUE	0.412941382453687
+skane_only	Kexp1p3_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	102	122	129	5	TRUE	TRUE	0.432485435657229
+skane_only	Kexp1p5_D120	ESkane_hist	ESkane	Degeberga	1956	1956	5	5	TRUE	129	153	181	5	TRUE	TRUE	0.330290380067429
+skane_only	Kexp1p5_D120	ESkane_mod	ESkane	Fästan	2021	2020	8	5	TRUE	45	66	80	5	TRUE	TRUE	0.526734707496242
+skane_only	Kexp1p5_D120	SESkane_mod	SESkane	SE Skåne	2022	2020	7	5	TRUE	40	59	59	5	TRUE	TRUE	0.694837074926078
+skane_only	Kexp1p5_D120	WSkane_hist	WSkane	Torna Hällestad	1951	1951	5	5	TRUE	163	174	202	5	TRUE	TRUE	0.50389253092869
+skane_only	Kexp1p5_D120	WSkane_mod	WSkane	Silvåkra	2021	2020	8	5	TRUE	74	112	126	5	TRUE	TRUE	0.409797322995515
