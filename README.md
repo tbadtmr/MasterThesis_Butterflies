@@ -8,8 +8,9 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 - `03-model_input/` all processed files need for the Simulation
 - `04-model_development/` SLiM model develoment steps and script versions
 - `05-burnin/` final burn-in candidates and selected ancestral burn-in model
-- `06-simulation/` simulation scripts and output (historical and future simulation)
-- `07-analysis/` comparison of model outputs to empirical data and downstream analysis
+- `06-simulation/` final historical and future simulation workflows
+- `07-model_comparison/` comparison of model outputs to empirical data
+- `08-analysis/` downstream analysis
 - `logs`
 - `plots`
 - `summaries`
@@ -359,6 +360,106 @@ nohup slim 05-burnin/01_burnin2_selected/burnin2_selected.slim \
 tail -f 05-burnin/01_burnin2_selected/output/burnin2_selected.log
 ```
 
+## 6. Historical and future simulations
+
+The selected generation-117000 burn-in state was used to initialize the final
+historical and future simulations. All production runs use the same ecological
+and genetic model and the final parameterisation (`DENS_MAX = 120`,
+`K_EXPONENT = 1.3`, `K_GLOBAL_CAP = 120000`).
+
+Each simulation starts from the selected burn-in state and undergoes a
+100-generation stabilisation period on the constant 1899 landscape before the
+historical landscape sequence begins. Annual HILDA+ suitability maps are then
+used from 1899 to 2019. The 2019 landscape is retained as the common 2020
+baseline, after which the future scenarios diverge from 2021 onward.
+
+Four future scenarios were simulated:
+
+- `status_quo` — the 2019 landscape is retained into the future
+- `restore_2km` — restoration of historically suitable grassland within 2 km of current high-suitability habitat
+- `restore_4km` — restoration within 4 km
+- `restore_6km` — restoration within 6 km
+
+Replicate IDs use deterministic random seeds (`100000 + replicate number`).
+The same replicate number therefore uses the same seed across scenarios,
+providing paired trajectories that are identical before the future scenarios
+diverge in 2021.
+
+### Simulation workflows
+
+The final simulations are organised into three complementary workflows:
+
+| Directory | Spatial extent | Replicates per scenario | Purpose |
+|---|---|---:|---|
+| `01-full-area-snapshots/` | Full study area | 50 | Main production simulations with complete population snapshots at selected historical, contemporary and future time points |
+| `02-skane-summaries/` | Skåne | 50 | Computationally reduced simulations used to increase replication for demographic and genetic summary trajectories |
+| `03-skane-structure/` | Skåne | 30 | Targeted full-population snapshots for downstream spatial sampling and population-structure analyses |
+
+The full-area simulations represent the primary spatial model. Because complete
+full-area simulations and population snapshots are computationally expensive,
+additional simulations restricted to Skåne were subsequently used to increase
+replication for analyses focused on the region containing the historical and
+contemporary genomic samples. Restricting the spatial extent does not alter the
+underlying demographic or genetic parameterisation.
+
+The Skåne summary runs omit large full-population SLiM snapshots while retaining
+the demographic and genetic summary calculations used to compare trajectories
+among future scenarios.
+
+The Skåne structure runs were further optimised for analyses requiring individual
+genotypes. Repeated nucleotide-diversity, FROH and genetic-load calculations are
+disabled in these runs. For the status-quo scenario, full population states are
+written for 1900, 2020 and 2140. Because the historical trajectory is shared
+among paired scenarios, restoration runs only require their scenario-specific
+2140 state. These simulations terminate after the 2140 snapshot has been written.
+
+### Full-area population snapshots
+
+The main full-area simulations write complete SLiM population states at:
+
+- 1900, 1951, 1956, 2020, 2140, 2260, 2380, 2500
+
+The historical 1951 and 1956 states correspond to the time periods used for
+comparison with historical genomic samples.
+
+Some full-area simulations exceeded the HPC wall-time. The companion
+`simulation_resume_from_snapshot.slim` and `run_resume_dardel.sh` scripts allow
+an interrupted trajectory to continue from its most recent full-population
+snapshot without duplicating output from the loaded generation.
+
+### Running the simulations
+
+The complete burn-in population state is not included in the repository because
+of its size. Before running the simulations, paths to the selected generation-
+117000 SLiM state and corresponding deleterious-mutation (`m2`) file must be
+provided.
+
+For example, a full-area status-quo simulation can be submitted on Dardel with:
+
+```sh
+export BURNIN_SNAPSHOT=/path/to/burnin_chr9_fulloutput_END_gen117000.slim
+export BURNIN_M2_FILE=/path/to/burnin_chr9_m2_gen117000.txt
+
+sbatch \
+  --export=ALL,SCENARIO=status_quo \
+  06-simulation/01-full-area-snapshots/run_dardel.sh
+```
+The other future scenarios are submitted by replacing `status quo` with `restore_2km`, `restore_4km` or `restore_6km`.
+The Skåne summary simulations can similarly be submitted on LUNARC with:
+```sh
+sbatch \
+  --export=ALL,SCENARIO=status_quo,BURNIN_SNAPSHOT=/path/to/burnin_chr9_fulloutput_END_gen117000.slim,BURNIN_M2_FILE=/path/to/burnin_chr9_m2_gen117000.txt \
+  06-simulation/02-skane-summaries/run_lunarc.sh
+```
+and the targeted structure runs with:
+```sh
+sbatch \
+  --export=ALL,SCENARIO=status_quo,BURNIN_SNAPSHOT=/path/to/burnin_chr9_fulloutput_END_gen117000.slim,BURNIN_M2_FILE=/path/to/burnin_chr9_m2_gen117000.txt \
+  06-simulation/03-skane-structure/run_lunarc.sh
+```
+The provided SLURM launch scripts retain the cluster resources used during the
+thesis. Account, partition and SLiM executable settings may need to be adjusted
+when running on another HPC system.
 
 
 
