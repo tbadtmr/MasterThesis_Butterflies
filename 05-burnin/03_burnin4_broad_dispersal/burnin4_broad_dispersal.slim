@@ -1,0 +1,796 @@
+// ============================================================
+// Burn-in candidate: broad dispersal / lower density scaling
+//
+// Full chromosome-9 genomic burn-in candidate for
+// Cyaniris semiargus.
+//
+// Candidate characteristics relative to the selected burn-in:
+//   - lower initial population: N0 = 20000
+//   - higher mean fecundity: MEAN_EGGS = 120
+//   - broader local dispersal: DISP_SD = 4.0
+//   - slightly broader mate-search kernel: SM = 0.6
+//   - broader long-distance dispersal: DISP_SD_LDD = 17.0
+//   - lower local density scaling: DENS_MAX = 100
+//   - linear suitability scaling: K_EXPONENT = 1.0
+//   - higher global safety cap: K_GLOBAL_CAP = 150000
+//
+// This candidate also reports both:
+//   - raw chromosome-9 FROH
+//   - a chromosome-length-scaled 416 Mb comparison value
+//
+// Shared framework:
+//   - spatial nonWF model on the 340 x 277 landscape
+//   - full annotated chromosome 9
+//   - neutral and deleterious mutations
+//   - sex-specific recombination
+//   - habitat-biased local dispersal plus rare LDD
+//   - local density-dependent fecundity and recruit survival
+//   - nucleotide-diversity convergence criterion
+//   - genetic-load and FROH diagnostics
+//
+// Note:
+//   This script documents one of the long-running alternative
+//   parameterisations explored during final model calibration.
+//   It was not the burn-in used to initialise the final thesis
+//   simulations.
+//
+//   Paths below are repository-relative for reproducibility.
+//   Run this script from the repository root.
+//
+//   Model mechanics and parameter values are retained from the
+//   original burnin4 run; only paths and documentation have been
+//   cleaned for the public repository.
+// ============================================================
+
+initialize() {
+        initializeSLiMModelType("nonWF");
+        initializeSLiMOptions(dimensionality="xy", nucleotideBased=F);
+        initializeSex("A");
+
+        // ----------------------------
+        // ECOLOGY
+        // ----------------------------
+        defineConstant("N0",             20000);
+        defineConstant("MEAN_EGGS",        120);
+        defineConstant("EGG_MAX",          700);
+        defineConstant("S_total",         0.03);
+        defineConstant("FECUN_EFF", MEAN_EGGS * S_total);
+        defineConstant("FEC_DD_STRENGTH",  1.0);
+
+        // ----------------------------
+        // Spatial scale
+        // ----------------------------
+        defineConstant("W",         340.0);
+        defineConstant("H",         277.0);
+        defineConstant("SPACE_SIGMA", 4.0);
+        defineConstant("DISP_SD", 4.0);
+        defineConstant("SI",      0.5);
+        defineConstant("SM",            0.6);
+        defineConstant("P_LDD",        0.1);
+        defineConstant("DISP_SD_LDD",  17.0);
+        defineConstant("N_CANDIDATES",   5);
+        defineConstant("DISP_BIAS_FLOOR", 0.01);
+
+        // ----------------------------
+        // Landscape
+        // ----------------------------
+        defineConstant("map_suit_in", "03-model_input/suit_maps/hilda_suitability_1899.txt");
+        defineConstant("OPT_THRESH",  0.01);
+
+        // ----------------------------
+        // Density dependence
+        // ----------------------------
+        defineConstant("MAX_SURV",   0.8);
+        defineConstant("DENS_MAX", 100.0);
+        defineConstant("USABLE_FRAC", 0.8);
+        defineConstant("K_EXPONENT",  1.0);
+        defineConstant("HAB_FLOOR",  0.01);
+
+        // ----------------------------
+        // Global cap
+        // ----------------------------
+        defineConstant("USE_GLOBAL_CAP",   T);
+        defineConstant("K_GLOBAL_CAP", 150000.0);
+
+        // ----------------------------
+        // Reporting intervals
+        // ----------------------------
+        defineConstant("TMAX_HARD",      100000000);
+        defineConstant("ECO_REPORT_INT",       100);   // ecology printed every 100 gens
+        defineConstant("GEN_REPORT_INT",      5000);   // genetics calculated every 5000 gens
+
+        // ----------------------------
+        // Pi convergence criterion
+        // Burn-in ends when |pi_now - pi_past| / pi_past < PI_CONV_THRESH
+        // checked every PI_CHECK_INT gens over PI_CONV_WINDOW gens.
+        // Never ends before PI_MIN_GEN.
+        // STAB_PERIOD gens of stability run after convergence (Pinto et al. 2023).
+        // ----------------------------
+        defineConstant("PI_CHECK_INT",   1000);
+        defineConstant("PI_CONV_WINDOW", 5000);
+        defineConstant("PI_CONV_THRESH", 0.01);
+        defineConstant("PI_MIN_GEN",    50000);
+        defineConstant("STAB_PERIOD",    1000);
+
+        // ----------------------------
+        // ROH thresholds and genome sizes
+        // ----------------------------
+        defineConstant("ROH_CUTOFF_1MB",   1000000);
+        defineConstant("ROH_CUTOFF_100KB",  100000);  // matches Nolen et al. 2024
+        defineConstant("FULL_GENOME",    416757882); // autosomal genome size: chr 1-23 excl. Z and MT
+
+        // ----------------------------
+        // Tajima's D: 20 individuals, comparable to Nolen et al. sample sizes
+        // ----------------------------
+        defineConstant("TAJIMA_N", 20);
+
+        // ----------------------------
+        // Interaction types
+        // ----------------------------
+        initializeInteractionType(1, "xy", reciprocal=T, maxDistance=SI * 3);
+        i1.setInteractionFunction("n", (1.0 / (2.0 * PI * SI^2)), SI);
+
+        initializeInteractionType(2, "xy", reciprocal=T, maxDistance=SM * 3, sexSegregation="FM");
+        i2.setInteractionFunction("n", 1.0, SM);
+
+        // ----------------------------
+        // OUTPUT FILES
+        // ----------------------------
+        defineConstant("out_dir", "05-burnin/03_burnin4_broad_dispersal/output/");
+        defineConstant("out_eco",    out_dir + "ecology.txt");
+        defineConstant("out_prefix", out_dir + "burnin_chr9");
+        defineConstant("out_neut",   out_dir + "NeutPi.txt");
+        defineConstant("out_load",   out_dir + "summaryLoad.txt");
+        defineConstant("out_hs",     out_dir + "hs_chr9_final.txt");
+
+        // ----------------------------
+        // GENETICS
+        // ----------------------------
+        defineConstant("MU",  2.9e-9);
+        defineConstant("R_M", 2.5e-8);
+        defineConstant("R_F", 0.0);   // achiasmate females
+        defineConstant("coord_file_in", "03-model_input/coord_chr9.txt");
+
+        coord_lines = readFile(coord_file_in);
+        lastRow = strsplit(coord_lines[length(coord_lines) - 1], "\t");
+        defineConstant("chromLen", asInteger(lastRow[4]) + 1);
+        defineConstant("seqLength", chromLen);
+
+        initializeMutationType("m1", 0.5, "f", 0.0);
+        m1.convertToSubstitution = T;
+
+        initializeMutationType("m2", 0.5, "g", -0.013, 0.186);
+        m2.convertToSubstitution = F;
+
+        delCoef = c(rexp(800, 0.05), rexp(200, 0.4));
+        delCoef = delCoef[delCoef <= 0.5];
+        defineConstant("delCoef_distr", delCoef);
+
+        initializeGenomicElementType("g1", c(m1, m2), c(0.6, 0.4));  // exon
+        initializeGenomicElementType("g2", c(m1, m2), c(0.6, 0.4));  // intron
+        initializeGenomicElementType("g3", m1, 1.0);                 // non-coding
+
+        for (line in coord_lines) {
+                fields = strsplit(line, "\t");
+                if (fields[0] != "V1") {
+                        feature  = fields[2];
+                        startPos = asInteger(fields[3]);
+                        endPos   = asInteger(fields[4]);
+                        if (feature == "exon")
+                                initializeGenomicElement(g1, startPos, endPos);
+                        else if (feature == "intron")
+                                initializeGenomicElement(g2, startPos, endPos);
+                        else if (feature == "non_coding")
+                                initializeGenomicElement(g3, startPos, endPos);
+                }
+        }
+
+        initializeMutationRate(MU);
+        initializeRecombinationRate(R_M, sex="M");
+        initializeRecombinationRate(R_F, sex="F");
+}
+
+
+// ------------------------------------------------------------
+// Dominance coefficients for deleterious mutations
+// ------------------------------------------------------------
+mutation(m2) {
+        mut.setValue("dom", sample(asFloat(delCoef_distr), 1));
+        return T;
+}
+
+mutationEffect(m2) {
+        if (homozygous)
+                return 1.0 + mut.selectionCoeff;
+        else
+                return 1.0 + mut.getValue("dom") * mut.selectionCoeff;
+}
+
+
+// ------------------------------------------------------------
+// Generation 1: initialize bookkeeping, population, map, headers
+// ------------------------------------------------------------
+1 early() {
+        sim.setValue("burn_done",      F);
+        sim.setValue("end_done",       F);
+        sim.setValue("pi_history",     c());
+        sim.setValue("burn_converged", F);
+        sim.setValue("conv_gen",      -1);
+}
+
+1 first() {
+        writeFile(out_eco,
+                "cycle\tN_end\tadultF\tadultM\tfemales_laid\teggs_laid\teggs_mean\teggs_sd\t" +
+                "meanFecScale\tmeanEggsExpected\trecruits_created\trecruits_viable\t" +
+                "culled_water\tmeanSuitAdults\tmeanCompRecr\tmeanDDsurvRecr\t" +
+                "meanKlocRecr\tmeanRHOrecr\texpNextN\tglobalScale",
+                append=F);
+
+        writeFile(out_neut,
+                "gen\tpop\tpi_global\tpi_spatial\tspatial_N\tspatial_coords\ttajimasD\tN",
+                append=F);
+
+        // FROH_100kb_19Mb  = raw chr9 FROH — PRIMARY value for comparisons
+        //                    (chr9 treated as representative of full genome)
+        // FROH_100kb_416Mb = scaled value (f_chr9 * chromLen/FULL_GENOME)
+        //                    kept for reference only; assumes zero ROH on other chromosomes
+        writeFile(out_load,
+                "gen\tpop\tN\tmutCount\tmutFixed\tmeanHet_m2\t" +
+                "loadHomo\tloadHetero\tloadTotal\t" +
+                "totalLoad\trealizedLoad\tmaskedLoad\t" +
+                "realizedLoad_FROH\tmaskedLoad_FROH\t" +
+                "FROH_100kb_19Mb\tFROH_100kb_416Mb\t" +
+                "meanCachedFitness\tsdCachedFitness",
+                append=F);
+
+        sim.addSubpop("p1", N0);
+        p1.setSpatialBounds(c(0.0, 0.0, W, H));
+
+        Xs = asFloat(readFile(map_suit_in));
+        Xs = matrix(Xs, nrow=asInteger(H), ncol=asInteger(W), byrow=T);
+        p1.defineSpatialMap("suit", "xy", Xs, interpolate=T,
+                valueRange=c(0.0, 1.0), colors=c("black", "green"));
+
+        Xk = pmax(0.0, Xs);
+        Xk[Xk <= OPT_THRESH] = 0.0;
+        Xk[Xk > OPT_THRESH] = DENS_MAX * USABLE_FRAC * (Xk[Xk > OPT_THRESH]^K_EXPONENT);
+        mapK_theoretical = sum(Xk);
+
+        catn("=== Cyaniris semiargus spatial model v7 ===");
+        catn("chromLen (sim)   = " + chromLen + " bp (~19 Mb, chr9)");
+        catn("FULL_GENOME      = " + FULL_GENOME + " bp (autosomes chr1-23, excl. Z+MT)");
+        catn("scale factor     = " + (asFloat(chromLen)/asFloat(FULL_GENOME)));
+        catn("Theoretical K    = " + mapK_theoretical);
+        catn("MU / R_M / R_F   = " + MU + " / " + R_M + " / " + R_F);
+        catn("PI convergence   = " + (PI_CONV_THRESH*100) + "% change over " + PI_CONV_WINDOW + " gens");
+        catn("PI_MIN_GEN       = " + PI_MIN_GEN);
+        catn("STAB_PERIOD      = " + STAB_PERIOD + " gens post-convergence (Pinto et al. 2023)");
+        catn("TAJIMA_N         = " + TAJIMA_N + " individuals (built-in calcTajimasD)");
+        catn("ECO_REPORT_INT   = " + ECO_REPORT_INT + " gens; GEN_REPORT_INT = " + GEN_REPORT_INT + " gens");
+        catn("FROH primary     = FROH_100kb_19Mb (raw chr9, representative genome assumption)");
+        catn("FROH comparison  = FROH_100kb_416Mb (scaled by chromLen/FULL_GENOME, for reference)");
+        catn("froh_for_load    = f100kb_19 (chr9 FROH used in Bertorelle load equations)");
+        catn("=============================================");
+
+        for (ind in p1.individuals) {
+                pos = p1.pointUniform();
+                s   = p1.spatialMapValue("suit", pos);
+                while (s <= OPT_THRESH) {
+                        pos = p1.pointUniform();
+                        s   = p1.spatialMapValue("suit", pos);
+                }
+                ind.setSpatialPosition(pos);
+        }
+
+        p1.individuals.age = 1;
+}
+
+
+// ------------------------------------------------------------
+// Reset counters each cycle
+// ------------------------------------------------------------
+1:TMAX_HARD first() {
+        sim.setValue("females_laid",       0);
+        sim.setValue("eggs_laid",          0);
+        sim.setValue("eggs_sq_laid",       0);
+        sim.setValue("recruits_created",   0);
+        sim.setValue("recruits_viable",    0);
+        sim.setValue("culled_water",       0);
+        sim.setValue("meanCompRecr",       0.0);
+        sim.setValue("meanDDsurvRecr",     0.0);
+        sim.setValue("meanKlocRecr",       0.0);
+        sim.setValue("meanRHOrecr",        0.0);
+        sim.setValue("adultF_now",         0);
+        sim.setValue("adultM_now",         0);
+        sim.setValue("meanSuitAdults_now", 0.0);
+        sim.setValue("expNextN",           0.0);
+        sim.setValue("globalScale",        1.0);
+        sim.setValue("fec_scale_sum",      0.0);
+        sim.setValue("fec_eggs_exp_sum",   0.0);
+        sim.setValue("fec_n",              0);
+
+        i1.evaluate(p1);
+        i2.evaluate(p1);
+}
+
+
+// ------------------------------------------------------------
+// Reproduction
+// ------------------------------------------------------------
+1:TMAX_HARD reproduction(p1, "F") {
+        if (individual.age < 1)
+                return;
+
+        mate = i2.drawByStrength(individual, 1);
+        if (mate.size() == 0)
+                return;
+
+        momPos = individual.spatialPosition;
+
+        compA     = i1.totalOfNeighborStrengths(individual);
+        suitA_raw = pmax(0.0, p1.spatialMapValue("suit", momPos));
+        suitA     = HAB_FLOOR + (1.0 - HAB_FLOOR) * suitA_raw;
+        KlocA     = pmax(1e-9, DENS_MAX * USABLE_FRAC * (suitA_raw^K_EXPONENT));
+        RHO_A     = FECUN_EFF / ((1.0 + FECUN_EFF) * KlocA);
+        fecDen    = suitA + FEC_DD_STRENGTH * RHO_A * compA + 1e-12;
+        fecScale  = pmax(0.0, pmin(1.0, suitA / fecDen));
+
+        meanEggsLocal = MEAN_EGGS * fecScale;
+
+        sim.setValue("fec_scale_sum",    sim.getValue("fec_scale_sum") + fecScale);
+        sim.setValue("fec_eggs_exp_sum", sim.getValue("fec_eggs_exp_sum") + meanEggsLocal);
+        sim.setValue("fec_n",            sim.getValue("fec_n") + 1);
+
+        nEggs = rpois(1, meanEggsLocal);
+        if (nEggs > EGG_MAX) nEggs = EGG_MAX;
+        if (nEggs <= 0) return;
+
+        sim.setValue("females_laid", sim.getValue("females_laid") + 1);
+        sim.setValue("eggs_laid",    sim.getValue("eggs_laid") + nEggs);
+        sim.setValue("eggs_sq_laid", sim.getValue("eggs_sq_laid") + (nEggs * nEggs));
+
+        nRecruit = rbinom(1, nEggs, S_total);
+        if (nRecruit <= 0) return;
+
+        for (i in seqLen(nRecruit)) {
+                off = subpop.addCrossed(individual, mate);
+                off.age = 0;
+
+                if (runif(1) < P_LDD) {
+                        tries = 0;
+                        x = momPos[0] + rnorm(1, 0.0, DISP_SD_LDD);
+                        y = momPos[1] + rnorm(1, 0.0, DISP_SD_LDD);
+                        x = max(0.0, min(W, x));
+                        y = max(0.0, min(H, y));
+                        pos = c(x, y);
+                        s = p1.spatialMapValue("suit", pos);
+
+                        while (s <= OPT_THRESH & tries < 10) {
+                                x = momPos[0] + rnorm(1, 0.0, DISP_SD_LDD);
+                                y = momPos[1] + rnorm(1, 0.0, DISP_SD_LDD);
+                                x = max(0.0, min(W, x));
+                                y = max(0.0, min(H, y));
+                                pos = c(x, y);
+                                s = p1.spatialMapValue("suit", pos);
+                                tries = tries + 1;
+                        }
+
+                        off.setSpatialPosition(pos);
+                        if (s <= OPT_THRESH) {
+                                off.fitnessScaling = 0.0;
+                                sim.setValue("culled_water", sim.getValue("culled_water") + 1);
+                        }
+                }
+                else {
+                        candX = asFloat(c()); candY = asFloat(c());
+                        candW = asFloat(c()); candS = asFloat(c());
+
+                        for (j in seqLen(N_CANDIDATES)) {
+                                x = momPos[0] + rnorm(1, 0.0, DISP_SD);
+                                y = momPos[1] + rnorm(1, 0.0, DISP_SD);
+                                x = max(0.0, min(W, x));
+                                y = max(0.0, min(H, y));
+                                posJ = c(x, y);
+                                sJ = p1.spatialMapValue("suit", posJ);
+                                candX = c(candX, x); candY = c(candY, y);
+                                candW = c(candW, pmax(DISP_BIAS_FLOOR, sJ));
+                                candS = c(candS, sJ);
+                        }
+
+                        chosen = sample(0:(size(candW)-1), 1, weights=candW);
+                        pos = c(candX[chosen], candY[chosen]);
+                        s   = candS[chosen];
+
+                        off.setSpatialPosition(pos);
+                        if (s <= OPT_THRESH) {
+                                off.fitnessScaling = 0.0;
+                                sim.setValue("culled_water", sim.getValue("culled_water") + 1);
+                        }
+                }
+        }
+
+        sim.setValue("recruits_created", sim.getValue("recruits_created") + nRecruit);
+}
+
+
+// ------------------------------------------------------------
+// Density-dependent recruit survival + annual turnover
+// ------------------------------------------------------------
+1:TMAX_HARD early() {
+        inds     = p1.individuals;
+        adults   = inds[inds.age >= 1];
+        recruits = inds[inds.age == 0];
+
+        i1.evaluate(p1);
+
+        sim.setValue("adultF_now", sum(adults.sex == "F"));
+        sim.setValue("adultM_now", sum(adults.sex == "M"));
+
+        meanSuitAdultsNow = 0.0;
+        if (adults.size() > 0)
+                meanSuitAdultsNow = mean(p1.spatialMapValue("suit", adults.spatialPosition));
+        sim.setValue("meanSuitAdults_now", meanSuitAdultsNow);
+
+        sim.setValue("meanCompRecr",   0.0); sim.setValue("meanDDsurvRecr", 0.0);
+        sim.setValue("meanKlocRecr",   0.0); sim.setValue("meanRHOrecr",    0.0);
+        sim.setValue("expNextN",       0.0); sim.setValue("globalScale",    1.0);
+
+        if (recruits.size() > 0) {
+                comp    = i1.totalOfNeighborStrengths(recruits);
+                posR    = recruits.spatialPosition;
+                suitRaw = pmax(0.0, p1.spatialMapValue("suit", posR));
+                suitR   = HAB_FLOOR + (1.0 - HAB_FLOOR) * suitRaw;
+                Kloc    = pmax(1e-9, DENS_MAX * USABLE_FRAC * (suitRaw^K_EXPONENT));
+                RHO     = FECUN_EFF / ((1.0 + FECUN_EFF) * Kloc);
+                den     = suitR + RHO * comp + 1e-12;
+                dd      = pmax(0.0, pmin(MAX_SURV, suitR / den));
+
+                recruits.fitnessScaling = recruits.fitnessScaling * dd;
+
+                expNextN    = sum(recruits.fitnessScaling);
+                globalScale = 1.0;
+                if (USE_GLOBAL_CAP & expNextN > K_GLOBAL_CAP)
+                        globalScale = K_GLOBAL_CAP / expNextN;
+                recruits.fitnessScaling = recruits.fitnessScaling * globalScale;
+
+                sim.setValue("meanCompRecr",   mean(comp));
+                sim.setValue("meanDDsurvRecr", mean(dd));
+                sim.setValue("meanKlocRecr",   mean(Kloc));
+                sim.setValue("meanRHOrecr",    mean(RHO));
+                sim.setValue("expNextN",       expNextN);
+                sim.setValue("globalScale",    globalScale);
+        }
+
+        if (adults.size() > 0)
+                adults.fitnessScaling = 0.0;
+
+        sim.setValue("recruits_viable", sum(recruits.fitnessScaling > 0.0));
+}
+
+
+// ------------------------------------------------------------
+// Main reporting loop + pi convergence check
+// ------------------------------------------------------------
+1:TMAX_HARD late() {
+        fLaid     = sim.getValue("females_laid");
+        eggsTotal = sim.getValue("eggs_laid");
+        eggsSq    = sim.getValue("eggs_sq_laid");
+        fecN      = sim.getValue("fec_n");
+
+        eggsMean = 0.0; eggsSD = 0.0;
+        meanFecScale = 0.0; meanEggsExpected = 0.0;
+
+        if (fLaid > 0) {
+                eggsMean = eggsTotal / fLaid;
+                varE = (eggsSq / fLaid) - (eggsMean^2);
+                if (varE < 0.0) varE = 0.0;
+                eggsSD = sqrt(varE);
+        }
+        if (fecN > 0) {
+                meanFecScale     = sim.getValue("fec_scale_sum") / fecN;
+                meanEggsExpected = sim.getValue("fec_eggs_exp_sum") / fecN;
+        }
+
+        ecoLine =
+                sim.cycle + "\t" + p1.individualCount + "\t" +
+                sim.getValue("adultF_now") + "\t" + sim.getValue("adultM_now") + "\t" +
+                fLaid + "\t" + eggsTotal + "\t" + eggsMean + "\t" + eggsSD + "\t" +
+                meanFecScale + "\t" + meanEggsExpected + "\t" +
+                sim.getValue("recruits_created") + "\t" + sim.getValue("recruits_viable") + "\t" +
+                sim.getValue("culled_water") + "\t" + sim.getValue("meanSuitAdults_now") + "\t" +
+                sim.getValue("meanCompRecr") + "\t" + sim.getValue("meanDDsurvRecr") + "\t" +
+                sim.getValue("meanKlocRecr") + "\t" + sim.getValue("meanRHOrecr") + "\t" +
+                sim.getValue("expNextN") + "\t" + sim.getValue("globalScale");
+
+        if (sim.cycle % ECO_REPORT_INT == 0) {
+                catn(ecoLine);
+                writeFile(out_eco, ecoLine, append=T);
+        }
+
+        if (sim.cycle % GEN_REPORT_INT == 0) {
+                writeFile(out_neut, getNeutLine(p1), append=T);
+                writeFile(out_load, getPopSumm(p1),  append=T);
+        }
+
+        // --------------------------------------------------------
+        // Pi convergence check every PI_CHECK_INT gens
+        // FIXED for SLiM 5.1: nEntries and subset indices are cast to integer.
+        // --------------------------------------------------------
+        if (sim.cycle % PI_CHECK_INT == 0 & !sim.getValue("burn_converged")) {
+                muts_m1 = unique(p1.haplosomes.mutationsOfType(m1));
+                pi_now  = calcHeterozygosity(p1.haplosomes, muts_m1);
+
+                hist = sim.getValue("pi_history");
+                hist = c(hist, asFloat(sim.cycle), pi_now);
+                sim.setValue("pi_history", hist);
+
+                nEntries = asInteger(size(hist) / 2);
+                if (sim.cycle >= PI_MIN_GEN & nEntries >= 2) {
+                        targetGen = sim.cycle - PI_CONV_WINDOW;
+                        pi_past   = -1.0;
+
+                        for (k in 0:(nEntries - 1)) {
+                                idx_gen = asInteger(k * 2);
+                                idx_pi  = asInteger(k * 2 + 1);
+
+                                if (asInteger(hist[idx_gen]) == targetGen) {
+                                        pi_past = hist[idx_pi];
+                                        break;
+                                }
+                        }
+
+                        if (pi_past > 0.0 & pi_now > 0.0) {
+                                relChange = abs(pi_now - pi_past) / pi_past;
+                                catn("PI_CHECK gen=" + sim.cycle +
+                                        " pi_now=" + pi_now +
+                                        " pi_past=" + pi_past +
+                                        " relChange=" + relChange);
+
+                                if (relChange < PI_CONV_THRESH) {
+                                        burnEnd = sim.cycle + STAB_PERIOD;
+                                        sim.setValue("burn_converged", T);
+                                        sim.setValue("conv_gen", sim.cycle);
+
+                                        catn("*** PI CONVERGED at gen " + sim.cycle +
+                                                " (relChange=" + relChange + ")" +
+                                                " -> burn-in snapshot at gen " + burnEnd + " ***");
+
+                                        community.rescheduleScriptBlock(s3, burnEnd, burnEnd);
+                                }
+                        }
+                }
+        }
+}
+
+
+// ------------------------------------------------------------
+// Fixed recovery snapshots
+// ------------------------------------------------------------
+s10 10000 late() {
+        catn("SNAPSHOT_10K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+s20 20000 late() {
+        catn("SNAPSHOT_20K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+s50 50000 late() {
+        catn("SNAPSHOT_50K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+s80 80000 late() {
+        catn("SNAPSHOT_80K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+s100 100000 late() {
+        catn("SNAPSHOT_100K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+s200 200000 late() {
+        catn("SNAPSHOT_200K\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+}
+
+
+// ------------------------------------------------------------
+// Burn-in end snapshot — rescheduled when pi converges
+// ------------------------------------------------------------
+s3 100000000 late() {
+        catn("SNAPSHOT_BURN_END\t" + sim.cycle + "\t" + time() + "\t" + date());
+        writeSnapshot(sim.cycle);
+
+        endGen = sim.cycle + STAB_PERIOD;
+        community.rescheduleScriptBlock(s4, endGen, endGen);
+        catn("Stabilization: " + STAB_PERIOD + " gens -> END snapshot at gen " + endGen);
+
+        sim.setValue("burn_done", T);
+}
+
+
+// ------------------------------------------------------------
+// Final END snapshot
+// ------------------------------------------------------------
+s4 100000000 late() {
+        catn("SNAPSHOT_END\t" + sim.cycle + "\t" + time() + "\t" + date());
+
+        sim.outputFull(out_prefix + "_fulloutput_END_gen" + sim.cycle + ".slim");
+        writeMutFile(sim.cycle);
+
+        writeFile(out_hs, geths(p1), append=F);
+
+        sampledInds    = sample(p1.individuals, min(TAJIMA_N, p1.individualCount));
+        muts_m1_sample = unique(sampledInds.haplosomes.mutationsOfType(m1));
+        D = 0.0;
+        if (size(muts_m1_sample) > 0)
+                D = calcTajimasD(sampledInds.haplosomes, muts_m1_sample);
+        catn("END Tajima's D = " + D);
+
+        sim.setValue("end_done", T);
+        sim.simulationFinished();
+}
+
+
+// ----------------------------------------------------------
+// FUNCTIONS
+// ----------------------------------------------------------
+
+// ------------------------------------------------------------
+// getNeutLine: one line for NeutPi.txt
+// ------------------------------------------------------------
+function (s) getNeutLine(o pop)
+{
+        muts_m1   = unique(pop.haplosomes.mutationsOfType(m1));
+        pi_global = calcHeterozygosity(pop.haplosomes, muts_m1);
+
+        i2.evaluate(pop);
+        target = pop.individuals[0];
+        indvs  = unique(i2.drawByStrength(target, 50));
+        pi_spatial = 0.0; spatN = 0; spatCoords = "NA";
+
+        if (size(indvs) > 0) {
+                total = 0.0;
+                for (ind in indvs) {
+                        muts0    = ind.haplosomes[0].mutationsOfType(m1);
+                        muts1    = ind.haplosomes[1].mutationsOfType(m1);
+                        shared   = sum(match(muts0, muts1) >= 0);
+                        unshared = size(muts0) + size(muts1) - 2 * shared;
+                        total    = total + unshared / chromLen;
+                }
+                pi_spatial = total / size(indvs);
+                spatN      = size(indvs);
+                spatCoords = paste(target.spatialPosition, sep=",");
+        }
+
+        D = 0.0;  // placeholder during burn-in reporting
+
+        return sim.cycle + "\t" + pop.id + "\t" + pi_global + "\t" +
+                pi_spatial + "\t" + spatN + "\t" + spatCoords + "\t" + D + "\t" +
+                pop.individualCount;
+}
+
+
+// ------------------------------------------------------------
+// getPopSumm: full genetics summary including both FROH columns
+//
+// FROH_100kb_19Mb  — raw chr9 FROH (primary comparison value)
+//   = calcMeanFroh(inds, 100kb) / chromLen
+//   Interpretation: fraction of simulated chromosome in ROH > 100kb.
+//   Used as genome-wide FROH estimate under the assumption that
+//   chr9 is representative of genome-wide IBD (Pinto et al. 2023).
+//   This is the value to compare against Nolen et al. empirical data.
+//
+// FROH_100kb_416Mb — scaled value (f_chr9 * chromLen / FULL_GENOME)
+//   Interpretation: fraction of FULL autosomal genome in ROH,
+//   assuming only chr9 contributes ROH and all other chromosomes have zero.
+//   This is a conservative lower bound, kept here for reference only.
+//
+// froh_for_load    = f100kb_19 (Bertorelle equations use the representative
+//                   genome assumption, consistent with Nolen et al.)
+// ------------------------------------------------------------
+function (s) getPopSumm(o pop)
+{
+        inds      = pop.individuals;
+        indvCount = size(inds);
+
+        if (indvCount == 0)
+                return sim.cycle + "\t" + pop.id +
+                "\t0\t0\t0\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA";
+
+        // Raw chr9 FROH (primary)
+        f100kb_19  = calcMeanFroh(inds, ROH_CUTOFF_100KB);
+        // Scaled comparison value
+        sf         = asFloat(chromLen) / asFloat(FULL_GENOME);
+        f100kb_416 = f100kb_19 * sf;
+
+        // Load equations use chr9 FROH as representative of full genome
+        froh_for_load  = f100kb_19;
+
+        fitness_cached = pop.cachedFitness(inds.index);
+        m_uniq         = unique(inds.uniqueMutationsOfType(m2));
+        Mutcount       = size(m_uniq);
+
+        if (Mutcount == 0) {
+                return sim.cycle + "\t" + pop.id + "\t" + indvCount +
+                        "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t" +
+                        f100kb_19 + "\t" + f100kb_416 + "\t" +
+                        mean(fitness_cached) + "\t" + sd(fitness_cached);
+        }
+
+        freqMut  = sim.mutationFrequencies(pop, m_uniq);
+        ScoefMut = abs(m_uniq.selectionCoeff);
+        DcoefMut = m_uniq.getValue("dom");
+
+        HomAlt = sapply(m_uniq,
+                "sum(inds.haplosomes[0].containsMutations(applyValue) & " +
+                "inds.haplosomes[1].containsMutations(applyValue)) / indvCount;");
+        Het = sapply(m_uniq,
+                "sum(inds.haplosomes[0].containsMutations(applyValue) != " +
+                "inds.haplosomes[1].containsMutations(applyValue)) / indvCount;");
+
+        mHet         = mean(Het);
+        mLoad_homo   = sum(ScoefMut * HomAlt);
+        mLoad_hetero = sum(ScoefMut * DcoefMut * Het);
+        mLoad        = mLoad_homo + mLoad_hetero;
+        totalLoad    = sum(freqMut * ScoefMut);
+
+        relzLoad = sum(freqMut^2 * ScoefMut) +
+                2 * sum(freqMut * (1 - freqMut) * ScoefMut * DcoefMut);
+        mskLoad  = totalLoad - relzLoad;
+
+        relzLoad_FROH = sum((1 - froh_for_load) * freqMut^2 * ScoefMut +
+                froh_for_load * freqMut * ScoefMut) +
+                2 * (1 - froh_for_load) *
+                sum(freqMut * (1 - freqMut) * ScoefMut * DcoefMut);
+        mskLoad_FROH  = totalLoad - relzLoad_FROH;
+
+        mutFixed = sum(HomAlt == 1.0);
+
+        return sim.cycle + "\t" + pop.id + "\t" + indvCount + "\t" +
+                Mutcount + "\t" + mutFixed + "\t" + mHet + "\t" +
+                mLoad_homo + "\t" + mLoad_hetero + "\t" + mLoad + "\t" +
+                totalLoad + "\t" + relzLoad + "\t" + mskLoad + "\t" +
+                relzLoad_FROH + "\t" + mskLoad_FROH + "\t" +
+                f100kb_19 + "\t" + f100kb_416 + "\t" +
+                mean(fitness_cached) + "\t" + sd(fitness_cached);
+}
+
+
+// ------------------------------------------------------------
+// geths: per-mutation s/h/freq — only written at final END
+// ------------------------------------------------------------
+function (s) geths(o pop)
+{
+        m_uniq = unique(pop.individuals.uniqueMutationsOfType(m2));
+        if (size(m_uniq) == 0) return "no_m2_mutations";
+        freqMut  = sim.mutationFrequencies(pop, m_uniq);
+        ScoefMut = abs(m_uniq.selectionCoeff);
+        DcoefMut = m_uniq.getValue("dom");
+        return sim.cycle + "\t" + pop.id + "\t" +
+                freqMut + "\t" + ScoefMut + "\t" + DcoefMut;
+}
+
+
+// ------------------------------------------------------------
+// writeSnapshot: full .slim state + mutation file
+// ------------------------------------------------------------
+function (void) writeSnapshot(i gen)
+{
+        sim.outputFull(out_prefix + "_fulloutput_gen" + gen + ".slim");
+        writeMutFile(gen);
+}
+
+function (void) writeMutFile(i gen)
+{
+        mut = unique(p1.haplosomes.mutationsOfType(m2));
+        if (size(mut) > 0) {
+                out = gen + "\t" + mut.id + "\t" + mut.position + "\t" +
+                        mut.selectionCoeff + "\t" + mut.getValue("dom") + "\t" +
+                        sim.mutationFrequencies(p1, mut);
+                writeFile(out_prefix + "_m2_gen" + gen + ".txt", out);
+        }
+}

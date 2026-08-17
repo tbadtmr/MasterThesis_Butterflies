@@ -1,0 +1,4 @@
+# Burn-in outputs can be very large and are not tracked by Git.
+*
+!.gitignore
+!.gitkeep
