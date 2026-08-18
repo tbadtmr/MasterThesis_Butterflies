@@ -10,7 +10,7 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 - `05-burnin/` final burn-in candidates and selected ancestral burn-in model
 - `06-simulation/` final historical and future simulation workflows
 - `07-model_comparison/` comparison of model outputs to empirical data
-- `08-analysis/` downstream analysis
+- `08-population-analysis/` downstream analysis
 - `logs`
 - `plots`
 - `summaries`
@@ -576,17 +576,20 @@ by Git.
 Population structure was analysed using fixed regional sampling designs applied to the simulated population snapshots.
 
 Two spatial designs were used:
+
 - **Full landscape:** 7 regions × 3 fixed sites = 21 sampling sites (`08-population-analysis/full/design/final_21_regional_core_sites.tsv`)
 - **Skåne-only:** 5 regions × 3 fixed sites = 15 sampling sites (`08-population-analysis/skane_only/design/final_15_regional_core_sites.tsv`)
 
 The full design contains the five Skåne regions (NW, NE, W, E and SE), western Småland and Öland. The latter two are retained as `NEW02` and `NEW01`, respectively, in the internal design file.
 
-At each site, up to 20 individuals within a radius of 4 model units were sampled. This corresponds to up to 60 individuals per region. Where fewer individuals were available, the smaller sample was retained while preserving the fixed-site design.
+At each site, up to 20 individuals within a radius of 4 model units were sampled, corresponding to up to 60 individuals per region. Where fewer individuals were available, the smaller sample was retained while preserving the fixed-site design.
 
-### Analysis steps
+Some post-processing scripts retain the Dardel directory structure used during the thesis. The `BASE` path defined near the beginning of these scripts should be adjusted when run elsewhere.
+
+### Sampling and joint genotype construction
 
 `18_export_population_positions.slim`  
-Extracts individual simulation indices and spatial coordinates from the selected SLiM population snapshots.
+Extracts individual simulation indices and spatial coordinates from selected SLiM population snapshots.
 
 `19_make_population_sampling_manifest.py`  
 Assigns individuals to the fixed sampling sites and selects up to 20 individuals per site using deterministic SHA256 ranking. The resulting sampling manifest records the exact individuals selected for each site and snapshot.
@@ -595,16 +598,13 @@ Assigns individuals to the fixed sampling sites and selects up to 20 individuals
 Reloads each SLiM population snapshot and exports the individuals listed in the sampling manifest as VCF files.
 
 `21_build_joint_population_vcf.py`  
-Constructs a joint neutral VCF for each replicate using neutral variants shared across the compared time points and future scenarios.
+Constructs a joint neutral VCF for each replicate using the compared historical, modern and future population states.
 
-`21_run_joint_population_pca_dardel.sh`  
-Converts the joint VCF to PLINK format, performs LD pruning using
+The position, sampling and genotype-export steps have matching SLURM launchers for Dardel and LUNARC in `00-scripts/slurm/`. The same workflow is used for the full-landscape and Skåne-only analyses by supplying the corresponding working directory, sampling design and task inventory.
 
-`--indep-pairwise 50 5 0.2`
+### PCA and ADMIXTURE
 
-and calculates 10 principal components.
-
-For the future population-structure comparison, the joint PCA contains six states within each replicate:
+Population structure was assessed using principal component analysis (PCA) and ADMIXTURE. Within each simulation replicate, samples from all six population states were combined into one joint genotype dataset:
 
 - 1900
 - 2020
@@ -613,17 +613,7 @@ For the future population-structure comparison, the joint PCA contains six state
 - 4-km restoration 2140
 - 6-km restoration 2140
 
-Independent simulation replicates are analysed separately rather than pooled into a single PCA.
-
-The position and genotype-export steps have matching SLURM launchers for Dardel and LUNARC in `00-scripts/slurm/`. The same scripts are used for the full and Skåne-only analyses by supplying the corresponding working directory, sampling design and task inventory.
-
-### Population structure
-
-### PCA and ADMIXTURE
-
-Population structure was assessed using principal component analysis (PCA) and
-ADMIXTURE. Within each simulation replicate, samples from all six population
-states (historical, modern, future scenarios) were combined into one joint genotype dataset. Analysing the six states jointly ensures that PCA axes and ADMIXTURE ancestry components are directly comparable among population states within a replicate. Independent simulation replicates were analysed separately.
+Analysing the six states jointly ensures that PCA axes and ADMIXTURE ancestry components are directly comparable among population states within a replicate. Independent simulation replicates were analysed separately rather than pooled.
 
 `21_run_joint_population_pca_dardel.sh`  
 Converts the joint neutral VCF to PLINK format, performs LD pruning using
@@ -640,9 +630,7 @@ The PCA step can be submitted on Dardel using:
 sbatch 00-scripts/slurm/21_run_joint_population_pca_dardel.sh
 ```
 
-ADMIXTURE was run on the same LD-pruned joint genotype datasets. Values of
-K = 1–8 were evaluated using five-fold cross-validation and 20 independent
-runs per K.
+ADMIXTURE was run on the same LD-pruned joint genotype datasets. Values of K = 1–8 were evaluated using five-fold cross-validation and 20 independent runs per K.
 
 `22_run_population_admixture_dardel.sh`  
 Runs ADMIXTURE for K = 1–8 across independent runs and simulation replicates.
@@ -654,9 +642,7 @@ sbatch 00-scripts/slurm/22_run_population_admixture_dardel.sh
 ```
 
 `30_summarize_admixture_and_prepare_plot.py`  
-Collects ADMIXTURE cross-validation errors and log-likelihoods, evaluates
-convergence among runs, and prepares the representative PCA and ADMIXTURE
-datasets used for plotting.
+Collects ADMIXTURE cross-validation errors and log-likelihoods, evaluates convergence among runs, and prepares the representative PCA and ADMIXTURE datasets used for plotting.
 
 Run with:
 
@@ -664,15 +650,10 @@ Run with:
 python3 00-scripts/30_summarize_admixture_and_prepare_plot.py
 ```
 
-Cross-validation error was lowest at K = 8. However, the three
-highest-likelihood runs converged within two log-likelihood units in only
-14 of 18 complete simulation replicates at K = 8, compared with all 18
-replicates at K = 7. K = 7 was therefore retained as the highest consistently
-converged solution for visualization.
+Cross-validation error was lowest at K = 8. However, the three highest-likelihood runs converged within two log-likelihood units in only 14 of 18 complete simulation replicates at K = 8, compared with all 18 replicates at K = 7. K = 7 was therefore retained as the highest consistently converged solution for visualization.
 
 `31_plot_pca_admixture_final.R`  
-Produces the final Skåne-only PCA and ADMIXTURE figure from the representative
-replicate.
+Produces the final Skåne-only PCA and ADMIXTURE figure from the representative simulation replicate.
 
 Run with:
 
@@ -681,8 +662,7 @@ Rscript 00-scripts/31_plot_pca_admixture_final.R
 ```
 
 `32_plot_full_landscape_PCA_rep002.R`  
-Produces the supplementary full-landscape PCA for replicate 002, including the
-five Skåne regions, western Småland and Öland.
+Produces the supplementary full-landscape PCA for replicate 002, including the five Skåne regions, western Småland and Öland.
 
 Run with:
 
@@ -690,31 +670,61 @@ Run with:
 Rscript 00-scripts/32_plot_full_landscape_PCA_rep002.R
 ```
 
-Final compact ADMIXTURE summaries are stored in
-`08-population-analysis/skane_only/results/structure/`.
+Compact ADMIXTURE summaries and the plot-ready representative data are stored in:
 
+```text
+summaries/population_structure/admixture/
+```
+
+The final population-structure figures used in the thesis are stored as:
+
+```text
+plots/Figure_08_PCA_ADMIXTURE.png
+plots/Figure_08_PCA_ADMIXTURE.svg
+plots/Figure_S4_full_landscape_PCA.png
+plots/Figure_S4_full_landscape_PCA.svg
+```
+
+### Regional diversity and differentiation
+
+`23_calculate_regional_pi_fst.py`  
+Calculates regional nucleotide diversity (π) from neutral variants and pairwise Hudson's FST separately for each simulation replicate.
+
+`24_summarize_regional_fst.R`  
+Summarizes regional FST into the three comparisons reported in the thesis: within Skåne, Skåne–W Småland and Skåne–Öland. Pairwise values are first averaged within each simulation replicate and then summarized across replicates.
+
+The regional π and FST analysis can be submitted on Dardel using:
+
+```sh
+sbatch 00-scripts/slurm/23_calculate_regional_pi_fst_dardel.sh
+```
+
+The grouped FST summary is then generated with:
+
+```sh
+Rscript 00-scripts/24_summarize_regional_fst.R
+```
+
+Final full-landscape regional diversity and differentiation results are stored in:
+
+```text
+08-population-analysis/full/results/regional_genetics/
+```
 
 ### Regional runs of homozygosity
 
-Regional genomic inbreeding was additionally characterized from runs of
-homozygosity (ROH) in the Skåne-only analysis. To maintain consistent local
-sampling through time and among scenarios, one fixed sampling site was used
-within each of the five Skåne regions (NW, NE, W, E and SE), with up to
-20 individuals sampled per site.
+Regional genomic inbreeding was additionally characterized using runs of homozygosity (ROH) in the Skåne-only analysis. To maintain consistent local sampling through time and among scenarios, one fixed sampling site was used within each of the five Skåne regions (NW, NE, W, E and SE), with up to 20 individuals sampled per site.
 
-ROH were inferred using `bcftools roh`. The final analysis used:
+ROH were inferred using `bcftools roh` with:
 
 ```text
 -G30 --AF-dflt 0.4 --ignore-homref -M 2.7594e-8
 ```
 
-Only ROH longer than 100 kb were retained. Regional summaries include total
-FROH, the number and mean length of ROH, and the contribution of different
-ROH-length classes to genomic inbreeding.
+Only ROH longer than 100 kb were retained. Regional summaries include total FROH, the number and mean length of ROH, and the contribution of different ROH-length classes to genomic inbreeding.
 
 `25_run_site2_roh_highrep.sh`  
-Runs the final ROH analysis for the fixed regional sampling sites across
-simulation replicates and population states.
+Runs the final ROH analysis for the fixed regional sampling sites across simulation replicates and population states.
 
 Submit on Dardel using:
 
@@ -723,8 +733,7 @@ sbatch 00-scripts/25_run_site2_roh_highrep.sh
 ```
 
 `26_parse_site2_roh_highrep.R`  
-Parses the `bcftools roh` output and calculates individual and regional ROH
-metrics.
+Parses the `bcftools roh` output and calculates individual and regional ROH metrics.
 
 Run with:
 
@@ -733,8 +742,7 @@ Rscript 00-scripts/26_parse_site2_roh_highrep.R
 ```
 
 `27_summarize_site2_roh_highrep.R`  
-Combines independent simulation replicates and generates the regional and
-overall summaries used in the thesis.
+Combines independent simulation replicates and generates the regional and overall summaries used in the thesis.
 
 Run with:
 
@@ -742,9 +750,11 @@ Run with:
 Rscript 00-scripts/27_summarize_site2_roh_highrep.R
 ```
 
-`28_plot_site2_regional_roh.R` and `29_plot_site2_roh_compact.R`  
-Generate regional ROH visualizations. The compact plot produced by
-`29_plot_site2_roh_compact.R` is the version used in the thesis.
+`28_plot_site2_regional_roh.R`  
+Generates detailed regional ROH visualizations.
+
+`29_plot_site2_roh_compact.R`  
+Produces the compact regional ROH-length composition figure used in the thesis.
 
 Run with:
 
@@ -752,9 +762,18 @@ Run with:
 Rscript 00-scripts/29_plot_site2_roh_compact.R
 ```
 
-Some post-processing scripts retain the Dardel directory structure used during
-the thesis. The `BASE` path defined near the beginning of these scripts should
-be adjusted when run elsewhere.
+Final regional ROH summaries used in the thesis are stored in:
+
+```text
+summaries/population_structure/regional_roh/
+```
+
+The final ROH figure is stored as:
+
+```text
+plots/Figure_09_regional_ROH.png
+plots/Figure_09_regional_ROH.svg
+```
 
 
 
