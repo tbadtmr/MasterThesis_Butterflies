@@ -608,9 +608,144 @@ Independent simulation replicates are analysed separately rather than pooled int
 
 The position and genotype-export steps have matching SLURM launchers for Dardel and LUNARC in `00-scripts/slurm/`. The same scripts are used for the full and Skåne-only analyses by supplying the corresponding working directory, sampling design and task inventory.
 
-### Pop structure
+### Population structure
+
+### PCA and ADMIXTURE
+
+Population structure was assessed using principal component analysis (PCA) and
+ADMIXTURE. Within each simulation replicate, samples from all six population
+states (historical, modern, future scenarios) were combined into one joint genotype dataset. Analysing the six states jointly ensures that PCA axes and ADMIXTURE ancestry components are directly comparable among population states within a replicate. Independent simulation replicates were analysed separately.
+
+`21_run_joint_population_pca_dardel.sh`  
+Converts the joint neutral VCF to PLINK format, performs LD pruning using
+
+```text
+--indep-pairwise 50 5 0.2
+```
+
+and calculates 10 principal components.
+
+The PCA step can be submitted on Dardel using:
+
+```sh
+sbatch 00-scripts/slurm/21_run_joint_population_pca_dardel.sh
+```
+
+ADMIXTURE was run on the same LD-pruned joint genotype datasets. Values of
+K = 1–8 were evaluated using five-fold cross-validation and 20 independent
+runs per K.
+
+`22_run_population_admixture_dardel.sh`  
+Runs ADMIXTURE for K = 1–8 across independent runs and simulation replicates.
+
+The ADMIXTURE analysis can be submitted on Dardel using:
+
+```sh
+sbatch 00-scripts/slurm/22_run_population_admixture_dardel.sh
+```
+
+`30_summarize_admixture_and_prepare_plot.py`  
+Collects ADMIXTURE cross-validation errors and log-likelihoods, evaluates
+convergence among runs, and prepares the representative PCA and ADMIXTURE
+datasets used for plotting.
+
+Run with:
+
+```sh
+python3 00-scripts/30_summarize_admixture_and_prepare_plot.py
+```
+
+Cross-validation error was lowest at K = 8. However, the three
+highest-likelihood runs converged within two log-likelihood units in only
+14 of 18 complete simulation replicates at K = 8, compared with all 18
+replicates at K = 7. K = 7 was therefore retained as the highest consistently
+converged solution for visualization.
+
+`31_plot_pca_admixture_final.R`  
+Produces the final Skåne-only PCA and ADMIXTURE figure from the representative
+replicate.
+
+Run with:
+
+```sh
+Rscript 00-scripts/31_plot_pca_admixture_final.R
+```
+
+`32_plot_full_landscape_PCA_rep002.R`  
+Produces the supplementary full-landscape PCA for replicate 002, including the
+five Skåne regions, western Småland and Öland.
+
+Run with:
+
+```sh
+Rscript 00-scripts/32_plot_full_landscape_PCA_rep002.R
+```
+
+Final compact ADMIXTURE summaries are stored in
+`08-population-analysis/skane_only/results/structure/`.
 
 
+### Regional runs of homozygosity
+
+Regional genomic inbreeding was additionally characterized from runs of
+homozygosity (ROH) in the Skåne-only analysis. To maintain consistent local
+sampling through time and among scenarios, one fixed sampling site was used
+within each of the five Skåne regions (NW, NE, W, E and SE), with up to
+20 individuals sampled per site.
+
+ROH were inferred using `bcftools roh`. The final analysis used:
+
+```text
+-G30 --AF-dflt 0.4 --ignore-homref -M 2.7594e-8
+```
+
+Only ROH longer than 100 kb were retained. Regional summaries include total
+FROH, the number and mean length of ROH, and the contribution of different
+ROH-length classes to genomic inbreeding.
+
+`25_run_site2_roh_highrep.sh`  
+Runs the final ROH analysis for the fixed regional sampling sites across
+simulation replicates and population states.
+
+Submit on Dardel using:
+
+```sh
+sbatch 00-scripts/25_run_site2_roh_highrep.sh
+```
+
+`26_parse_site2_roh_highrep.R`  
+Parses the `bcftools roh` output and calculates individual and regional ROH
+metrics.
+
+Run with:
+
+```sh
+Rscript 00-scripts/26_parse_site2_roh_highrep.R
+```
+
+`27_summarize_site2_roh_highrep.R`  
+Combines independent simulation replicates and generates the regional and
+overall summaries used in the thesis.
+
+Run with:
+
+```sh
+Rscript 00-scripts/27_summarize_site2_roh_highrep.R
+```
+
+`28_plot_site2_regional_roh.R` and `29_plot_site2_roh_compact.R`  
+Generate regional ROH visualizations. The compact plot produced by
+`29_plot_site2_roh_compact.R` is the version used in the thesis.
+
+Run with:
+
+```sh
+Rscript 00-scripts/29_plot_site2_roh_compact.R
+```
+
+Some post-processing scripts retain the Dardel directory structure used during
+the thesis. The `BASE` path defined near the beginning of these scripts should
+be adjusted when run elsewhere.
 
 
 ### Regional diversity and differentiation
