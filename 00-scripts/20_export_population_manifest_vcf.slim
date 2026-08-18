@@ -1,0 +1,181 @@
+// ============================================================
+// Export individual positions from a saved SLiM outputFull()
+// snapshot.
+//
+// Required command-line constants:
+//   SNAPSHOT   path to .slim snapshot
+//   OUT        output TSV
+//   MODEL      model label
+//   REP        replicate label
+//   YEAR       simulation year
+//   COORD_FILE chromosome annotation file
+//
+// No simulation is run forward.
+// ============================================================
+
+initialize() {
+
+    initializeSLiMModelType("nonWF");
+    initializeSLiMOptions(
+        dimensionality = "xy",
+        nucleotideBased = F
+    );
+    initializeSex("A");
+
+    // --------------------------------------------------------
+    // Reconstruct chromosome structure used by current model
+    // --------------------------------------------------------
+
+    coord_lines = readFile(COORD_FILE);
+
+    lastRow = strsplit(
+        coord_lines[length(coord_lines) - 1],
+        "\t"
+    );
+
+    defineConstant(
+        "chromLen",
+        asInteger(lastRow[4]) + 1
+    );
+
+    // Mutation types
+    initializeMutationType(
+        "m1",
+        0.5,
+        "f",
+        0.0
+    );
+
+    m1.convertToSubstitution = T;
+
+    initializeMutationType(
+        "m2",
+        0.5,
+        "g",
+        -0.013,
+        0.186
+    );
+
+    m2.convertToSubstitution = F;
+
+    // Genomic element types
+    initializeGenomicElementType(
+        "g1",
+        c(m1, m2),
+        c(0.6, 0.4)
+    );
+
+    initializeGenomicElementType(
+        "g2",
+        c(m1, m2),
+        c(0.6, 0.4)
+    );
+
+    initializeGenomicElementType(
+        "g3",
+        m1,
+        1.0
+    );
+
+    // Reconstruct annotated chromosome
+    for (line in coord_lines) {
+
+        fields = strsplit(line, "\t");
+
+        if (fields[0] != "V1") {
+
+            feature  = fields[2];
+            startPos = asInteger(fields[3]);
+            endPos   = asInteger(fields[4]);
+
+            if (feature == "exon") {
+
+                initializeGenomicElement(
+                    g1,
+                    startPos,
+                    endPos
+                );
+
+            } else if (feature == "intron") {
+
+                initializeGenomicElement(
+                    g2,
+                    startPos,
+                    endPos
+                );
+
+            } else if (feature == "non_coding") {
+
+                initializeGenomicElement(
+                    g3,
+                    startPos,
+                    endPos
+                );
+            }
+        }
+    }
+
+    // Nothing is simulated forward
+    initializeMutationRate(0.0);
+
+    initializeRecombinationRate(
+        0.0,
+        sex = "M"
+    );
+
+    initializeRecombinationRate(
+        0.0,
+        sex = "F"
+    );
+}
+
+
+// ============================================================
+// Load snapshot and export EXACT manifest individuals to VCF
+// ============================================================
+
+1 early() {
+
+    sim.readFromPopulationFile(SNAPSHOT);
+
+    // One SLiM individual index per line
+    wanted = asInteger(readFile(INDICES_FILE));
+
+    if (size(wanted) == 0)
+        stop("INDICES_FILE contains no indices.");
+
+    allInds = p1.individuals;
+    allIdx  = allInds.index;
+
+    // Locate requested individuals
+    pos = match(wanted, allIdx);
+
+    if (any(pos < 0)) {
+        missing = wanted[pos < 0];
+        catn("Missing individual indices:");
+        catn(missing);
+        stop("Some manifest individuals were not found in snapshot.");
+    }
+
+    inds = allInds[pos];
+
+    if (size(inds) != size(wanted))
+        stop("Selected individual count does not match manifest.");
+
+    if (size(unique(inds.index)) != size(inds))
+        stop("Duplicate individuals detected.");
+
+    catn("Loaded snapshot N = " + p1.individualCount);
+    catn("Manifest individuals requested = " + size(wanted));
+    catn("Individuals selected = " + size(inds));
+
+    inds.outputIndividualsToVCF(
+        filePath = OUT_VCF,
+        append = F,
+        outputMultiallelics = F
+    );
+
+    catn("Wrote VCF: " + OUT_VCF);
+
+    sim.simulationFinished();
+}
