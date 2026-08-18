@@ -562,6 +562,55 @@ positions, complete sampling manifests, genotype requests, VCF files and HPC
 logs, are reproducible from the supplied scripts and are therefore not tracked
 by Git.
 
+## 8. Downstream population structure analysis
+
+Population structure was analysed using fixed regional sampling designs applied to the simulated population snapshots.
+
+Two spatial designs were used:
+- **Full landscape:** 7 regions × 3 fixed sites = 21 sampling sites (`08-population-analysis/full/design/final_21_regional_core_sites.tsv`)
+- **Skåne-only:** 5 regions × 3 fixed sites = 15 sampling sites (`08-population-analysis/skane_only/design/final_15_regional_core_sites.tsv`)
+
+The full design contains the five Skåne regions (NW, NE, W, E and SE), western Småland and Öland. The latter two are retained as `NEW02` and `NEW01`, respectively, in the internal design file.
+
+At each site, up to 20 individuals within a radius of 4 model units were sampled. This corresponds to up to 60 individuals per region. Where fewer individuals were available, the smaller sample was retained while preserving the fixed-site design.
+
+### Analysis steps
+
+`18_export_population_positions.slim`  
+Extracts individual simulation indices and spatial coordinates from the selected SLiM population snapshots.
+
+`19_make_population_sampling_manifest.py`  
+Assigns individuals to the fixed sampling sites and selects up to 20 individuals per site using deterministic SHA256 ranking. The resulting sampling manifest records the exact individuals selected for each site and snapshot.
+
+`20_export_population_manifest_vcf.slim`  
+Reloads each SLiM population snapshot and exports the individuals listed in the sampling manifest as VCF files.
+
+`21_build_joint_population_vcf.py`  
+Constructs a joint neutral VCF for each replicate so that the compared time points and future scenarios are analysed using the same set of variants.
+
+`21_run_joint_population_pca_dardel.sh`  
+Converts the joint VCF to PLINK format, performs LD pruning using
+
+`--indep-pairwise 50 5 0.2`
+
+and calculates 10 principal components.
+
+For the future population-structure comparison, the joint PCA contains six states within each replicate:
+
+- 1900
+- 2020
+- status quo 2140
+- 2-km restoration 2140
+- 4-km restoration 2140
+- 6-km restoration 2140
+
+Independent simulation replicates are analysed separately rather than pooled into a single PCA.
+
+### Running the analysis
+
+The position and genotype-export steps have matching SLURM launchers for Dardel and LUNARC in `00-scripts/slurm/`. The same scripts are used for the full and Skåne-only analyses by supplying the corresponding working directory, sampling design and task inventory.
+
+Large intermediate files such as SLiM population states, position tables, VCFs and PLINK files are not tracked by Git.
 
 
 
