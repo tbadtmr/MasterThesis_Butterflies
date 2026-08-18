@@ -1,0 +1,35 @@
+name: butterflies
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  # Core languages
+  - python=3.12
+  - r-base=4.5
+
+  # Python packages
+  - numpy
+  - pandas
+
+  # R packages
+  - r-dplyr
+  - r-ggplot2
+  - r-patchwork
+  - r-readr
+  - r-terra
+  - r-tidyr
+  - r-svglite
+
+  # Simulation
+  - slim=5.1
+
+  # Sequence and population-genomic tools
+  - samtools
+  - bcftools
+  - plink
+  - admixture
+  - pixy
+  - seqkit
+  - blast

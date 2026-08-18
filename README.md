@@ -17,19 +17,28 @@ Modelling landscape effects on gene flow and genomic erosion in grassland butter
 
 ## Conda environment
 
-(*add yml file)
 ```sh
 conda env create -f environment.yml
 conda activate butterflies
 ```
 - SLiM and SLiMgui 5.1
-- samtools 1.13
-- seqkit v2.13.0
-- dustmasker 1.0.0
-- BCFtools / RoH 1.20
+- R 4.5.3
+  - dplyr
+  - ggplot2
+  - patchwork
+  - readr
+  - terra
+  - tidyr
+- Python 3.12
+  - NumPy
+  - pandas
+- SAMtools
+- BCFtools / RoH
 - PLINK 1.9
+- ADMIXTURE
 - pixy
-- R
+- SeqKit 2.13.0
+- BLAST+ / dustmasker
 
 ## 1. Reference genome and chromosome selection
 The reference genome of *Cyaniris semiargus* was obtained from NCBI:
@@ -748,25 +757,6 @@ the thesis. The `BASE` path defined near the beginning of these scripts should
 be adjusted when run elsewhere.
 
 
-### Regional diversity and differentiation
-
-`23_calculate_regional_pi_fst.py`  
-Calculates regional nucleotide diversity (π) from neutral variants and pairwise Hudson's FST separately for each simulation replicate.
-
-`24_summarize_regional_fst.R`  
-Summarizes regional FST into the three comparisons reported in the thesis: within Skåne, Skåne–W Småland and Skåne–Öland. Pairwise values are first averaged within each simulation replicate and then summarized across replicates.
-
-The regional π and FST analysis can be submitted on Dardel using:
-
-```sh
-sbatch 00-scripts/slurm/23_calculate_regional_pi_fst_dardel.sh
-```
-The grouped FST summary is then generated with:
-```sh
-Rscript 00-scripts/24_summarize_regional_fst.R
-```
-Final full-landscape results are stored in: `08-population-analysis/full/results/regional_genetics/`.
-
 
 ## References
 Lohse, K. et al. (2023). Genome assembly of *Cyaniris semiargus* (Mazarine Blue). Wellcome Open Research / Darwin Tree of Life Project.
@@ -775,4 +765,30 @@ Winkler, K., Fuchs, R., Rounsevell, M.D.A., & Herold, M. (2021). Global land use
 
 Winkler, K., Fuchs, R., Rounsevell, M.D.A., & Herold, M. (2020). HILDA+ Global Land Use Change between 1960 and 2019 (vGLOB-1.0). PANGAEA. https://doi.org/10.1594/PANGAEA.921846
 
+Haller, B.C., Ralph, P.L., & Messer, P.W. (2026). SLiM 5: Eco-evolutionary simulations across multiple chromosomes and full genomes. Molecular Biology and Evolution, 43(1), msaf313. doi:10.1093/molbev/msaf313
 
+R Core Team. (2026). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. doi:10.32614/R.manuals
+
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L.D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T.L., Miller, E., Bache, S.M., Müller, K., Ooms, J., Robinson, D., Seidel, D.P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., & Yutani, H. (2019). Welcome to the Tidyverse. Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686
+
+Pedersen, T.L. (2025). patchwork: The Composer of Plots. R package. doi:10.32614/CRAN.package.patchwork
+
+Hijmans, R.J., Brown, A., Barbosa, M.A., Cordano, E., & Dyba, K. (2026). terra: Spatial Data Analysis. R package. doi:10.32614/CRAN.package.terra
+
+Harris, C.R., Millman, K.J., van der Walt, S.J., et al. (2020). Array programming with NumPy. Nature, 585, 357–362. doi:10.1038/s41586-020-2649-2
+
+McKinney, W. (2010). Data Structures for Statistical Computing in Python. Proceedings of the 9th Python in Science Conference.
+
+Danecek, P., Bonfield, J.K., Liddle, J., et al. (2021). Twelve years of SAMtools and BCFtools. GigaScience, 10(2), giab008. doi:10.1093/gigascience/giab008
+
+Narasimhan, V., Danecek, P., Scally, A., Xue, Y., Tyler-Smith, C., & Durbin, R. (2016). BCFtools/RoH: a hidden Markov model approach for detecting autozygosity from next-generation sequencing data. Bioinformatics, 32(11), 1749–1751. doi:10.1093/bioinformatics/btw044
+
+Chang, C.C., Chow, C.C., Tellier, L.C.A.M., Vattikuti, S., Purcell, S.M., & Lee, J.J. (2015). Second-generation PLINK: rising to the challenge of larger and richer datasets. GigaScience, 4, 7. doi:10.1186/s13742-015-0047-8
+
+Alexander, D.H., Novembre, J., & Lange, K. (2009). Fast model-based estimation of ancestry in unrelated individuals. Genome Research, 19(9), 1655–1664. doi:10.1101/gr.094052.109
+
+Korunes, K.L., & Samuk, K. (2021). pixy: Unbiased estimation of nucleotide diversity and divergence in the presence of missing data. Molecular Ecology Resources, 21(4), 1359–1368. doi:10.1111/1755-0998.13326
+
+Shen, W., Le, S., Li, Y., & Hu, F. (2016). SeqKit: A Cross-Platform and Ultrafast Toolkit for FASTA/Q File Manipulation. PLOS ONE, 11(10), e0163962. doi:10.1371/journal.pone.0163962
+
+Camacho, C., Coulouris, G., Avagyan, V., Ma, N., Papadopoulos, J., Bealer, K., & Madden, T.L. (2009). BLAST+: architecture and applications. BMC Bioinformatics, 10, 421. doi:10.1186/1471-2105-10-421

@@ -1,0 +1,6 @@
+best_K_by_mean_CV	7
+representative_replicate	rep030
+selected_run	run10
+mean_CV_representative	0.356323
+top3_LL_spread	0.026031999848783016
+top3_converged	True
