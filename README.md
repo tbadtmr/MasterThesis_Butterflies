@@ -484,7 +484,7 @@ draws. Southeastern Skåne had no historical empirical sample and was therefore
 compared with historical eastern Skåne.
 
 The comparison included nucleotide diversity (π), individual heterozygosity
-(H), runs of homozygosity (FROH), and pairwise genetic differentiation (FST).
+(H), runs of homozygosity (FROH) and pairwise genetic differentiation (FST).
 Statistics from the 100 random samples were averaged within each simulation
 replicate and replicate means were then summarized across the five independent
 replicates.
@@ -586,7 +586,7 @@ Assigns individuals to the fixed sampling sites and selects up to 20 individuals
 Reloads each SLiM population snapshot and exports the individuals listed in the sampling manifest as VCF files.
 
 `21_build_joint_population_vcf.py`  
-Constructs a joint neutral VCF for each replicate so that the compared time points and future scenarios are analysed using the same set of variants.
+Constructs a joint neutral VCF for each replicate using neutral variants shared across the compared time points and future scenarios.
 
 `21_run_joint_population_pca_dardel.sh`  
 Converts the joint VCF to PLINK format, performs LD pruning using
@@ -606,13 +606,24 @@ For the future population-structure comparison, the joint PCA contains six state
 
 Independent simulation replicates are analysed separately rather than pooled into a single PCA.
 
-### Running the analysis
-
 The position and genotype-export steps have matching SLURM launchers for Dardel and LUNARC in `00-scripts/slurm/`. The same scripts are used for the full and Skåne-only analyses by supplying the corresponding working directory, sampling design and task inventory.
 
-Large intermediate files such as SLiM population states, position tables, VCFs and PLINK files are not tracked by Git.
+### Pop structure
 
 
+
+
+### Regional diversity and differentiation
+
+`23_calculate_regional_pi_fst.py`  
+Calculates regional nucleotide diversity (π) from neutral variants and pairwise Hudson's FST separately for each simulation replicate.
+
+`24_summarize_regional_fst.R`  
+Summarizes regional FST into the three comparisons reported in the thesis: within Skåne, Skåne–W Småland and Skåne–Öland. Pairwise values are first averaged within each simulation replicate and then summarized across replicates.
+
+Final full-landscape results are stored in:
+
+`08-population-analysis/full/results/regional_genetics/`
 
 
 
