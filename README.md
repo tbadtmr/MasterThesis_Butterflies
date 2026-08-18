@@ -1,5 +1,14 @@
 # MasterThesis_Butterflies
-Modelling landscape effects on gene flow and genomic erosion in grassland butterfly *Cyaniris semiargus*.
+**Genomic responses to historical grassland loss and simulated future
+scenarios in the grassland specialist *Cyaniris semiargus***
+
+Spatially explicit forward simulations (SLiM) across a reconstructed
+1899–2019 land-cover landscape of southern Sweden, tracking how a 73%
+loss of grassland translated into changes in diversity, inbreeding and
+structure. Simulated genomes are compared against historical and modern
+museum genomes and the model is then projected 500 generations forward
+under status-quo and grassland-restoration scenarios.
+
 
 ## Structure
 - `00-scripts/` analysis and preprocessing scripts
