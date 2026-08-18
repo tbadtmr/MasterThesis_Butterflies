@@ -621,10 +621,16 @@ Calculates regional nucleotide diversity (π) from neutral variants and pairwise
 `24_summarize_regional_fst.R`  
 Summarizes regional FST into the three comparisons reported in the thesis: within Skåne, Skåne–W Småland and Skåne–Öland. Pairwise values are first averaged within each simulation replicate and then summarized across replicates.
 
-Final full-landscape results are stored in:
+The regional π and FST analysis can be submitted on Dardel using:
 
-`08-population-analysis/full/results/regional_genetics/`
-
+```sh
+sbatch 00-scripts/slurm/23_calculate_regional_pi_fst_dardel.sh
+```
+The grouped FST summary is then generated with:
+```sh
+Rscript 00-scripts/24_summarize_regional_fst.R
+```
+Final full-landscape results are stored in: `08-population-analysis/full/results/regional_genetics/`.
 
 
 ## References
